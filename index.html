@@ -1,0 +1,2857 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>我的音樂世界 🎵</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+:root{--bg:#0f0c1a;--card:#1e1833;--a1:#ff6b9d;--a2:#c77dff;--a3:#ffd166;--yes:#06d6a0;--no:#ff4d6d;--txt:#f0e6ff;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(199,125,255,.12),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(255,107,157,.1),transparent 50%);pointer-events:none;z-index:0;}
+
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px 16px 80px;}
+h1{text-align:center;font-size:clamp(1.4rem,5vw,2.1rem);font-weight:900;background:linear-gradient(135deg,var(--a1),var(--a2),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.sub{text-align:center;font-size:.9rem;color:rgba(240,230,255,.5);margin-bottom:20px;}
+
+.tabs{display:flex;justify-content:center;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.tab{padding:10px 18px;border-radius:50px;border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;background:var(--card);color:rgba(240,230,255,.6);transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.tab svg{width:18px;height:18px;flex-shrink:0;opacity:.7;transition:opacity .2s;}
+.tab.on svg{opacity:1;}
+.tab.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 0 20px rgba(255,107,157,.4);}
+.sec{display:none;}.sec.on{display:block;}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:800px){.grid{grid-template-columns:repeat(4,1fr);}}
+
+/* Card */
+.card{background:var(--card);border-radius:22px;border:2px solid rgba(199,125,255,.2);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;user-select:none;position:relative;overflow:hidden;}
+.card:hover{border-color:rgba(199,125,255,.45);}
+.card:active{transform:scale(.9);}
+.card.lit{border-color:var(--a1);box-shadow:0 0 28px rgba(255,107,157,.55);animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+.ce{font-size:3.6rem;text-align:center;padding:22px 8px 8px;display:block;line-height:1;}
+.cl{text-align:center;font-weight:700;font-size:1.05rem;padding:0 8px 6px;}
+.cs{text-align:center;font-size:.8rem;color:rgba(240,230,255,.4);padding:0 8px 14px;}
+.yt-badge{position:absolute;top:8px;right:8px;background:#ff0000;border-radius:6px;padding:2px 6px;font-size:.6rem;font-weight:900;color:#fff;}
+
+/* Voice selector */
+#voice-bar{background:var(--card);border-radius:16px;border:1px solid rgba(199,125,255,.25);padding:14px 16px;margin-bottom:20px;}
+#voice-label{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--a2);margin-bottom:10px;}
+#voice-options{display:flex;flex-wrap:wrap;gap:8px;}
+.vbtn{padding:8px 14px;border-radius:50px;border:2px solid rgba(199,125,255,.25);background:rgba(255,255,255,.05);color:rgba(240,230,255,.75);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.vbtn:active{transform:scale(.95);}
+.vbtn.on{border-color:var(--a1);background:rgba(255,107,157,.15);color:#fff;}
+.vbtn .vtag{font-size:.65rem;background:rgba(255,255,255,.1);border-radius:4px;padding:1px 5px;}
+.glabel{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--a2);margin-bottom:9px;padding-left:4px;}
+.gsec{margin-bottom:24px;}
+/* Photo cards */
+.add-card{border:2px dashed rgba(199,125,255,.4) !important;background:rgba(199,125,255,.05);}
+.add-card:hover{border-color:var(--a2) !important;background:rgba(199,125,255,.12);}
+.photo-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px 16px 0 0;display:block;}
+.photo-card .del-btn{position:absolute;top:6px;right:6px;background:rgba(255,77,109,.88);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:.8rem;cursor:pointer;line-height:26px;text-align:center;}
+/* ── Battle ── */
+#battle-start-btn{padding:18px 48px;border-radius:60px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;cursor:pointer;box-shadow:0 0 30px rgba(255,107,157,.45);animation:glow2 1.5s ease-in-out infinite alternate;}
+@keyframes glow2{from{box-shadow:0 0 15px rgba(255,107,157,.3);}to{box-shadow:0 0 40px rgba(199,125,255,.7);}}
+#battle-round-info{text-align:center;font-size:.85rem;font-weight:700;color:var(--a2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+#battle-vs-row{display:flex;align-items:center;gap:10px;}
+.battle-slot{flex:1;background:var(--card);border-radius:22px;border:3px solid rgba(199,125,255,.2);cursor:pointer;overflow:hidden;transition:all .2s;position:relative;}
+.battle-slot:hover{border-color:var(--a1);box-shadow:0 0 30px rgba(255,107,157,.4);transform:scale(1.03);}
+.battle-slot:active{transform:scale(.95);}
+.battle-slot img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.battle-slot .bs-name{text-align:center;font-weight:700;font-size:1rem;padding:10px 6px 14px;}
+.battle-slot .bs-emoji{font-size:2.5rem;text-align:center;padding:20px 8px 8px;display:block;}
+#battle-vs{font-size:1.8rem;font-weight:900;color:rgba(240,230,255,.35);flex-shrink:0;}
+.battle-slot.winner{border-color:var(--yes);box-shadow:0 0 40px rgba(6,214,160,.5);animation:pop .4s ease;}
+/* Result */
+#br-trophy{font-size:5rem;text-align:center;margin-bottom:8px;animation:bounce 1s ease-in-out infinite alternate;}
+#br-title{font-size:1.4rem;font-weight:900;text-align:center;color:var(--a3);margin-bottom:16px;}
+#br-winner-img-wrap{width:55%;max-width:220px;margin:0 auto 14px;border-radius:22px;overflow:hidden;border:3px solid var(--a3);box-shadow:0 0 40px rgba(255,209,102,.4);}
+#br-winner-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+#br-winner-name{font-size:1.6rem;font-weight:900;text-align:center;color:var(--txt);margin-bottom:18px;}
+#br-score-list{background:var(--card);border-radius:16px;padding:14px 16px;border:1px solid rgba(199,125,255,.2);}
+.br-score-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.br-score-row:last-child{border-bottom:none;}
+.br-score-img{width:40px;height:40px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.br-score-emoji{font-size:1.8rem;flex-shrink:0;}
+.br-score-name{flex:1;font-weight:700;font-size:.9rem;}
+.br-score-bar-wrap{width:90px;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+.br-score-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .5s ease;}
+.br-score-num{font-size:.82rem;font-weight:700;color:var(--a2);min-width:28px;text-align:right;}
+/* Battle roster card */
+.battle-roster-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px 18px 0 0;display:block;}
+.battle-del-btn{position:absolute;top:6px;right:6px;background:rgba(255,77,109,.88);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:.75rem;cursor:pointer;line-height:26px;text-align:center;}
+/* Unsplash search */
+.unsplash-bar{background:rgba(199,125,255,.07);border:1px solid rgba(199,125,255,.2);border-radius:14px;padding:13px;margin-bottom:10px;}
+#unsplash-results .card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px 16px 0 0;display:block;}
+/* Dicebear avatar picker */
+.dice-opt{width:60px;height:60px;border-radius:50%;overflow:hidden;cursor:pointer;border:3px solid transparent;transition:all .15s;flex-shrink:0;}
+.dice-opt.on{border-color:var(--a1);box-shadow:0 0 14px rgba(255,107,157,.5);}
+.dice-opt img{width:100%;height:100%;object-fit:cover;display:block;}
+.add-person-btn{display:block;margin-top:12px;padding:11px 22px;border-radius:50px;border:2px dashed rgba(199,125,255,.4);background:rgba(199,125,255,.06);color:rgba(240,230,255,.7);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;width:100%;}
+.person-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px 18px 0 0;display:block;}
+.person-edit-btn{position:absolute;top:6px;right:6px;background:rgba(199,125,255,.88);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:.75rem;cursor:pointer;line-height:26px;text-align:center;}
+#person-modal{position:fixed;inset:0;z-index:900;background:rgba(10,8,20,.9);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;}
+#person-modal.show{display:flex;}
+#person-box{background:var(--card);border-radius:24px;border:2px solid rgba(199,125,255,.3);padding:28px 24px;width:90%;max-width:340px;display:flex;flex-direction:column;gap:14px;}
+#person-box h3{font-size:1.1rem;font-weight:900;color:var(--txt);text-align:center;}
+#person-preview{width:100%;aspect-ratio:1;border-radius:16px;background:rgba(255,255,255,.05);border:2px dashed rgba(199,125,255,.3);display:flex;align-items:center;justify-content:center;font-size:3rem;cursor:pointer;overflow:hidden;}
+#person-preview img{width:100%;height:100%;object-fit:cover;}
+#person-name-in{width:100%;background:rgba(255,255,255,.07);border:2px solid rgba(199,125,255,.3);border-radius:12px;padding:11px 14px;color:var(--txt);font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;text-align:center;outline:none;}
+#person-name-in:focus{border-color:var(--a2);}
+.person-modal-btns{display:flex;gap:10px;}
+.pmb{flex:1;padding:12px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;}
+.pmb-save{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;}
+.pmb-del{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:#ff4d6d;}
+.pmb-cancel{background:rgba(255,255,255,.08);color:rgba(240,230,255,.6);}
+
+/* ── FULLSCREEN OVERLAY ── */
+#fs{
+  position:fixed;inset:0;z-index:500;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  background:rgba(10,8,20,.93);
+  backdrop-filter:blur(14px);
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+#fs.on{opacity:1;pointer-events:all;}
+#fs-emoji{font-size:clamp(4rem,18vw,8rem);animation:em-bounce .5s ease;}
+@keyframes em-bounce{0%{transform:scale(.4)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+#fs-text{
+  font-size:clamp(2.8rem,14vw,7rem);
+  font-weight:900;
+  text-align:center;
+  padding:0 20px;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:txt-in .35s ease;
+  line-height:1.15;
+}
+@keyframes txt-in{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+#fs-sub{font-size:clamp(1rem,4vw,1.5rem);color:rgba(240,230,255,.55);text-align:center;}
+#fs-close{
+  margin-top:10px;
+  padding:14px 40px;border-radius:50px;border:none;
+  background:rgba(255,255,255,.1);color:var(--txt);
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;
+  cursor:pointer;border:1px solid rgba(255,255,255,.2);
+}
+#fs-close:active{background:rgba(255,255,255,.2);}
+
+/* YES/NO */
+.ynw{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0 20px;}
+.ynq{background:var(--card);border-radius:18px;border:2px solid rgba(199,125,255,.2);padding:16px 18px;width:100%;max-width:500px;}
+.ynq label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--a2);margin-bottom:7px;}
+.ynq input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(199,125,255,.3);border-radius:10px;padding:9px 13px;color:var(--txt);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;text-align:center;outline:none;}
+.ynq input:focus{border-color:var(--a2);}
+#yndsp{font-size:clamp(1rem,4vw,1.4rem);font-weight:900;text-align:center;min-height:2.4em;padding:0 14px;}
+.ynbtns{display:flex;gap:14px;width:100%;max-width:500px;}
+.ynb{flex:1;padding:24px 8px;border-radius:20px;border:none;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:transform .15s;}
+.ynb:active{transform:scale(.9);}
+.ybe{font-size:clamp(2rem,7vw,3rem);}
+.ybl{font-size:clamp(1rem,4vw,1.4rem);}
+.yes{background:rgba(100,200,160,.25);border:2px solid rgba(100,200,160,.45);color:#fff;box-shadow:0 4px 18px rgba(100,200,160,.2);}
+.no{background:rgba(200,100,120,.25);border:2px solid rgba(200,100,120,.45);color:#fff;box-shadow:0 4px 18px rgba(200,100,120,.2);}
+
+.fbo{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:600;}
+.fbt{font-size:clamp(4rem,18vw,8rem);font-weight:900;opacity:0;text-shadow:0 0 40px currentColor;}
+.fbt.on{animation:fp 1.2s forwards;}
+@keyframes fp{0%{opacity:0;transform:scale(.5)}20%{opacity:1;transform:scale(1.1)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.2) translateY(-20px)}}
+.fyes{color:var(--yes);}.fno{color:var(--no);}
+.cf{position:fixed;width:10px;height:10px;pointer-events:none;z-index:700;border-radius:2px;animation:fall 1.4s ease-in forwards;}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(65vh) rotate(720deg)}}
+/* ── Record sub-tabs ── */
+.rec-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.rtab{padding:9px 18px;border-radius:50px;border:2px solid transparent;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;background:var(--card);color:rgba(240,230,255,.6);transition:all .2s;}
+.rtab.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 0 16px rgba(255,107,157,.4);}
+.rec-panel{display:none;}.rec-panel.on{display:block;}
+
+/* QA panel */
+#qa-date-bar{text-align:center;font-size:.78rem;color:rgba(240,230,255,.4);margin-bottom:10px;font-weight:700;}
+#qa-progress-bar{background:rgba(255,255,255,.08);border-radius:50px;height:8px;margin-bottom:18px;overflow:hidden;}
+#qa-progress-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:50px;transition:width .4s ease;}
+#qa-question-wrap{background:var(--card);border-radius:18px;border:2px solid rgba(199,125,255,.25);padding:18px 20px;margin-bottom:16px;text-align:center;}
+#qa-qnum{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--a2);margin-bottom:8px;}
+#qa-question{font-size:clamp(1.1rem,4vw,1.5rem);font-weight:900;color:var(--txt);}
+#qa-choices .card{cursor:pointer;}
+#qa-choices .card.qa-selected{border-color:var(--yes);box-shadow:0 0 20px rgba(6,214,160,.4);background:rgba(6,214,160,.08);}
+#qa-done{text-align:center;padding:20px 0;}
+#qa-done-emoji{font-size:4rem;margin-bottom:10px;}
+#qa-done-title{font-size:1.3rem;font-weight:900;color:var(--txt);margin-bottom:12px;}
+#qa-done-summary{background:var(--card);border-radius:14px;padding:14px 16px;text-align:left;font-size:.88rem;line-height:1.8;border:1px solid rgba(199,125,255,.2);}
+
+/* Summary panel */
+#summary-content{display:flex;flex-direction:column;gap:14px;}
+.sum-day{background:var(--card);border-radius:16px;border:1px solid rgba(199,125,255,.2);overflow:hidden;}
+.sum-day-header{padding:12px 16px;background:rgba(199,125,255,.1);font-weight:700;font-size:.9rem;display:flex;justify-content:space-between;align-items:center;}
+.sum-day-body{padding:12px 16px;font-size:.85rem;line-height:1.9;}
+.sum-row{display:flex;gap:8px;align-items:flex-start;padding:3px 0;}
+.sum-q{color:rgba(240,230,255,.5);flex-shrink:0;min-width:100px;}
+.sum-a{font-weight:700;color:var(--txt);}
+
+/* QA standalone section */
+#qa2-date-bar{text-align:center;font-size:.78rem;color:rgba(240,230,255,.4);margin-bottom:10px;font-weight:700;}
+#qa2-progress-bar{background:rgba(255,255,255,.08);border-radius:50px;height:8px;margin-bottom:18px;overflow:hidden;}
+#qa2-progress-fill{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:50px;transition:width .4s ease;}
+#qa2-question-wrap{background:var(--card);border-radius:18px;border:2px solid rgba(199,125,255,.25);padding:18px 20px;margin-bottom:16px;text-align:center;}
+#qa2-category{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:4px;}
+#qa2-qnum{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--a2);margin-bottom:8px;}
+#qa2-question{font-size:clamp(1.15rem,4vw,1.6rem);font-weight:900;color:var(--txt);}
+#qa2-choices .card.qa-selected{border-color:var(--yes);box-shadow:0 0 20px rgba(6,214,160,.4);background:rgba(6,214,160,.08);}
+#qa2-done-summary{background:var(--card);border-radius:14px;padding:14px 16px;font-size:.85rem;line-height:1.9;border:1px solid rgba(199,125,255,.2);max-height:50vh;overflow-y:auto;}
+.qa2-cat-header{font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--a1);margin:10px 0 4px;padding-top:8px;border-top:1px solid rgba(199,125,255,.15);}
+.qa2-cat-header:first-child{margin-top:0;border-top:none;}
+/* Welcome popup */
+#welcome-popup{position:fixed;inset:0;z-index:800;background:rgba(10,8,20,.88);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;}
+#welcome-popup.show{display:flex;}
+#welcome-box{background:var(--card);border-radius:24px;border:2px solid rgba(199,125,255,.3);padding:36px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;width:90%;max-width:360px;box-shadow:0 0 60px rgba(199,125,255,.2);text-align:center;}
+#welcome-emoji{font-size:4rem;animation:em-bounce .6s ease;}
+#welcome-msg{font-size:1.3rem;font-weight:900;color:var(--txt);line-height:1.5;}
+#welcome-ok{padding:14px 40px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;cursor:pointer;box-shadow:0 0 20px rgba(199,125,255,.3);}
+
+/* Name modal */
+#name-modal{position:fixed;inset:0;z-index:800;background:rgba(10,8,20,.88);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;}
+#name-modal.show{display:flex;}
+#name-box{background:var(--card);border-radius:24px;border:2px solid rgba(199,125,255,.3);padding:32px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;width:90%;max-width:360px;box-shadow:0 0 60px rgba(199,125,255,.2);}
+#name-emoji{font-size:3.5rem;}
+#name-title{font-size:1.3rem;font-weight:900;color:var(--txt);text-align:center;}
+#name-input{width:100%;background:rgba(255,255,255,.07);border:2px solid rgba(199,125,255,.3);border-radius:14px;padding:14px 16px;color:var(--txt);font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:700;text-align:center;outline:none;}
+#name-input:focus{border-color:var(--a2);}
+#name-confirm{width:100%;padding:14px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;cursor:pointer;box-shadow:0 0 20px rgba(199,125,255,.3);}
+/* Greeting bar */
+#qa2-greeting{background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.2);border-radius:16px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#qa2-greeting-text{font-size:1.1rem;font-weight:700;color:var(--txt);}
+#qa2-change-name{background:none;border:1px solid rgba(199,125,255,.3);border-radius:50px;padding:5px 12px;color:rgba(240,230,255,.5);font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;}
+#qa2-greeting.hidden{display:none;}
+#qa2-list-inner{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.qa2-list-cat{font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--a1);margin:14px 0 6px;padding-left:2px;}
+.qa2-list-cat:first-child{margin-top:0;}
+.qa2-list-item{background:var(--card);border-radius:14px;border:2px solid rgba(199,125,255,.18);padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;}
+.qa2-list-item:active{transform:scale(.97);}
+.qa2-list-item:hover{border-color:rgba(199,125,255,.45);}
+.qa2-list-item.answered{border-color:var(--yes);background:rgba(6,214,160,.06);}
+.qli-num{font-size:.75rem;font-weight:700;color:rgba(240,230,255,.3);min-width:22px;}
+.qli-text{flex:1;font-weight:700;font-size:.9rem;}
+.qli-ans{font-size:.82rem;color:var(--yes);font-weight:700;}
+.qli-arrow{color:rgba(240,230,255,.25);font-size:.9rem;}
+
+#rec-summary{background:var(--card);border-radius:16px;border:1px solid rgba(199,125,255,.2);padding:16px;margin-bottom:16px;}
+.rec-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(min-width:480px){.rec-stat-row{grid-template-columns:repeat(6,1fr);}}
+.rec-stat{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.04);border-radius:12px;padding:10px 6px;border:1px solid rgba(255,255,255,.07);}
+.rs-num{font-size:1.6rem;font-weight:900;color:var(--sc,var(--a2));}
+.rs-lbl{font-size:.7rem;color:rgba(240,230,255,.5);font-weight:700;text-align:center;}
+.rec-cats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.rcat{padding:7px 13px;border-radius:50px;border:1px solid rgba(199,125,255,.2);background:rgba(255,255,255,.04);color:rgba(240,230,255,.6);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.rcat.on{background:rgba(199,125,255,.2);border-color:var(--a2);color:#fff;}
+#rec-list{display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto;padding-right:4px;}
+.rec-item{background:var(--card);border-radius:14px;border:1px solid rgba(255,255,255,.07);padding:12px 14px;display:flex;align-items:center;gap:12px;animation:fadeIn .25s ease;position:relative;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none;transition:border-color .15s,box-shadow .15s;}
+.rec-item.lp-hold{border-color:rgba(255,77,109,.6);box-shadow:0 0 20px rgba(255,77,109,.35);}
+.del-overlay{position:absolute;inset:0;background:rgba(255,55,90,.93);border-radius:14px;display:none;align-items:center;justify-content:center;gap:16px;z-index:10;}
+.del-overlay.show{display:flex;}
+.del-overlay .do-icon{font-size:2rem;}
+.del-overlay .do-yes{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.4);border-radius:50px;padding:8px 20px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:900;color:#fff;cursor:pointer;}
+.del-overlay .do-no{background:none;border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:8px 16px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:rgba(255,255,255,.75);cursor:pointer;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.rec-item-em{font-size:1.8rem;flex-shrink:0;}
+.rec-item-body{flex:1;}
+.rec-item-text{font-weight:700;font-size:.95rem;}
+.rec-item-meta{font-size:.72rem;color:rgba(240,230,255,.4);margin-top:2px;}
+.rec-item-cat{font-size:.68rem;padding:2px 8px;border-radius:20px;font-weight:700;flex-shrink:0;}
+.cat-like{background:rgba(6,214,160,.15);color:#06d6a0;}
+.cat-dislike{background:rgba(255,77,109,.15);color:#ff4d6d;}
+.cat-need{background:rgba(255,209,102,.15);color:#ffd166;}
+.cat-feel{background:rgba(199,125,255,.15);color:#c77dff;}
+.cat-talk{background:rgba(255,107,157,.15);color:#ff6b9d;}
+.cat-music{background:rgba(255,0,0,.12);color:#ff6b6b;}
+.cat-yn{background:rgba(6,214,160,.12);color:#06d6a0;}
+.rec-empty{text-align:center;color:rgba(240,230,255,.3);padding:40px 0;font-size:.95rem;}
+/* Rec user bar */
+#rec-user-bar{background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.2);border-radius:14px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.95rem;}
+#rec-user-bar .ru-avatar{font-size:1.8rem;}
+#rec-user-bar .ru-name{color:var(--a1);}
+#rec-user-bar .ru-sub{font-size:.75rem;color:rgba(240,230,255,.45);font-weight:600;margin-top:2px;}
+
+/* Single settings float button */
+#settings-float-btn{position:fixed;top:14px;right:16px;z-index:400;background:var(--card);border:2px solid rgba(199,125,255,.3);border-radius:50%;width:48px;height:48px;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:all .2s;}
+#settings-float-btn:hover{border-color:var(--a2);box-shadow:0 0 24px rgba(199,125,255,.5);}
+#settings-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.5);display:none;}
+#settings-overlay.show{display:block;}
+#settings-panel{position:fixed;top:0;right:-100%;width:min(480px,100vw);height:100vh;z-index:610;background:rgba(12,10,22,.98);backdrop-filter:blur(16px);border-left:1px solid rgba(199,125,255,.2);overflow-y:auto;padding:20px 16px 80px;transition:right .32s cubic-bezier(.34,1.1,.64,1);}
+#settings-panel.open{right:0;}
+#settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(199,125,255,.15);}
+#settings-title{font-size:1.15rem;font-weight:900;color:var(--txt);}
+#settings-close{background:none;border:1px solid rgba(255,255,255,.15);border-radius:50%;width:36px;height:36px;color:rgba(240,230,255,.6);font-size:1.1rem;cursor:pointer;}
+.s-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.s-navbtn{padding:9px 14px;border-radius:50px;border:2px solid rgba(199,125,255,.2);background:rgba(255,255,255,.04);color:rgba(240,230,255,.6);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.s-navbtn.on{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent;color:#fff;box-shadow:0 0 14px rgba(255,107,157,.3);}
+.s-sec{display:none;}.s-sec.on{display:block;}
+.s-mode-btn{width:100%;padding:12px 16px;border-radius:13px;border:2px solid rgba(199,125,255,.18);background:rgba(255,255,255,.04);color:rgba(240,230,255,.65);font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-align:left;transition:all .15s;display:block;margin-bottom:7px;}
+.s-mode-btn.on{border-color:var(--a2);background:rgba(199,125,255,.15);color:#fff;}
+.admin-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.admin-tab{padding:8px 14px;border-radius:50px;border:1px solid rgba(199,125,255,.2);background:rgba(255,255,255,.04);color:rgba(240,230,255,.6);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.admin-tab.on{background:rgba(199,125,255,.2);border-color:var(--a2);color:#fff;}
+.admin-sec{display:none;}.admin-sec.on{display:block;}
+.admin-card-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;max-height:40vh;overflow-y:auto;}
+.admin-card-item{background:rgba(255,255,255,.05);border:1px solid rgba(199,125,255,.12);border-radius:12px;padding:9px 11px;display:flex;align-items:center;gap:9px;}
+.admin-card-em{font-size:1.5rem;flex-shrink:0;}
+.admin-card-info{flex:1;}
+.admin-card-name{font-weight:700;font-size:.86rem;}
+.admin-card-sub{font-size:.68rem;color:rgba(240,230,255,.35);margin-top:1px;}
+.admin-del-btn{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:#ff4d6d;border-radius:50%;width:27px;height:27px;font-size:.78rem;cursor:pointer;flex-shrink:0;line-height:27px;text-align:center;}
+.admin-add-form{background:rgba(199,125,255,.07);border:1px solid rgba(199,125,255,.2);border-radius:14px;padding:13px;margin-bottom:13px;}
+.admin-form-label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--a2);margin-bottom:5px;}
+.admin-input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(199,125,255,.22);border-radius:10px;padding:9px 12px;color:var(--txt);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:600;outline:none;margin-bottom:9px;}
+.admin-input:focus{border-color:var(--a2);}
+.admin-save-btn{width:100%;padding:11px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.92rem;cursor:pointer;}
+.admin-sec-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--a2);margin:12px 0 6px;}
+#site-title{cursor:pointer;display:inline-block;border-bottom:2px dashed transparent;border-radius:4px;transition:border-color .2s;padding:0 4px;}
+#site-title:hover{border-color:rgba(199,125,255,.5);}
+#title-edit-wrap{display:none;margin-bottom:8px;}
+#title-input{background:rgba(255,255,255,.07);border:2px solid var(--a2);border-radius:12px;padding:8px 14px;color:var(--txt);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;text-align:center;outline:none;width:220px;max-width:90vw;}
+.rec-date-group{margin-bottom:10px;}
+.rec-date-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(199,125,255,.12);border-radius:12px;border:1px solid rgba(199,125,255,.2);cursor:pointer;font-weight:700;font-size:.88rem;color:var(--a2);margin-bottom:6px;transition:background .15s;}
+.rec-date-header:hover{background:rgba(199,125,255,.2);}
+.rec-date-count{font-size:.75rem;color:rgba(240,230,255,.45);font-weight:600;}
+.rec-date-arrow{font-size:.85rem;color:rgba(240,230,255,.4);}
+.rec-date-body{display:flex;flex-direction:column;gap:6px;}
+.rac-btn{padding:10px 20px;border-radius:50px;border:1px solid rgba(255,77,109,.35);background:rgba(255,77,109,.12);color:#ff4d6d;font-family:'Nunito',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;}
+.rac-btn.grn{border-color:rgba(6,214,160,.35);background:rgba(6,214,160,.12);color:#06d6a0;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:rgba(199,125,255,.3);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══ FULLSCREEN DISPLAY ══ -->
+<div id="fs" onclick="closeFS()">
+  <div id="fs-emoji">😊</div>
+  <div id="fs-text">你好！</div>
+  <div id="fs-sub"></div>
+  <button id="fs-close" onclick="closeFS()">✕ 關閉</button>
+</div>
+
+<!-- Single settings float button -->
+<button id="settings-float-btn" onclick="openSettings()" title="設定">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+
+<!-- Settings panel overlay -->
+<div id="settings-overlay" onclick="closeSettings()"></div>
+
+<!-- Settings panel (slides from right) -->
+<div id="settings-panel">
+  <div id="settings-header">
+    <div id="settings-title">⚙️ 設定</div>
+    <button id="settings-close" onclick="closeSettings()">✕</button>
+  </div>
+
+  <!-- Settings nav -->
+  <div class="s-nav">
+    <button class="s-navbtn on" onclick="swSettings(this,'rec-sec')">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      紀錄本
+    </button>
+    <button class="s-navbtn" onclick="swSettings(this,'voice-sec')">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      語音
+    </button>
+    <button class="s-navbtn" onclick="swSettings(this,'cards-sec')">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      字卡管理
+    </button>
+  </div>
+
+  <!-- ── 紀錄本 ── -->
+  <div id="settings-rec-sec" class="s-sec on">
+    <div class="rec-tabs">
+      <button class="rtab on" onclick="swRecTab(this,'history')">📋 歷史紀錄</button>
+      <button class="rtab" onclick="swRecTab(this,'summary')">📊 統整報告</button>
+    </div>
+    <div id="rec-history" class="rec-panel on">
+      <div id="rec-user-bar"></div>
+      <div id="rec-summary-stats">
+        <div class="rec-stat-row">
+          <div class="rec-stat"><span class="rs-num" id="rs-total">0</span><span class="rs-lbl">總紀錄</span></div>
+          <div class="rec-stat" style="--sc:#06d6a0"><span class="rs-num" id="rs-like">0</span><span class="rs-lbl">喜歡</span></div>
+          <div class="rec-stat" style="--sc:#ff4d6d"><span class="rs-num" id="rs-dislike">0</span><span class="rs-lbl">不喜歡</span></div>
+          <div class="rec-stat" style="--sc:#ffd166"><span class="rs-num" id="rs-need">0</span><span class="rs-lbl">需求</span></div>
+          <div class="rec-stat" style="--sc:#c77dff"><span class="rs-num" id="rs-feel">0</span><span class="rs-lbl">感受</span></div>
+          <div class="rec-stat" style="--sc:#ff6b9d"><span class="rs-num" id="rs-talk">0</span><span class="rs-lbl">溝通</span></div>
+        </div>
+      </div>
+      <div class="rec-cats">
+        <button class="rcat on" onclick="filterRec(this,'all')">全部</button>
+        <button class="rcat" onclick="filterRec(this,'like')">喜歡</button>
+        <button class="rcat" onclick="filterRec(this,'dislike')">不喜歡</button>
+        <button class="rcat" onclick="filterRec(this,'need')">需求</button>
+        <button class="rcat" onclick="filterRec(this,'feel')">感受</button>
+        <button class="rcat" onclick="filterRec(this,'talk')">溝通</button>
+        <button class="rcat" onclick="filterRec(this,'music')">音樂</button>
+        <button class="rcat" onclick="filterRec(this,'yn')">好不好</button>
+      </div>
+      <div id="rec-list"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap;">
+        <button class="rac-btn" onclick="clearRec()">🗑️ 清除全部</button>
+        <button class="rac-btn grn" onclick="exportRec()">📋 複製摘要</button>
+      </div>
+      <p id="rec-copied" style="text-align:center;color:var(--yes);font-size:.85rem;margin-top:8px;display:none;">✅ 已複製！</p>
+    </div>
+    <div id="rec-summary" class="rec-panel">
+      <div id="summary-content"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;">
+        <button class="rac-btn grn" onclick="copySummary()">📋 複製報告</button>
+      </div>
+      <p id="sum-copied" style="text-align:center;color:var(--yes);font-size:.85rem;margin-top:8px;display:none;">✅ 已複製！</p>
+    </div>
+  </div>
+
+  <!-- ── 語音 ── -->
+  <div id="settings-voice-sec" class="s-sec">
+    <div class="admin-sec-label">🎙️ 語音風格</div>
+    <div id="voice-options" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
+
+    <div class="admin-sec-label">🔊 音效模式</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="s-mode-btn on" id="mode-full"    onclick="setSoundMode('full')">🔊 語音＋音效（全開）</button>
+      <button class="s-mode-btn"    id="mode-sfx"     onclick="setSoundMode('sfx')">🎵 只有音效（無語音）</button>
+      <button class="s-mode-btn"    id="mode-tts"     onclick="setSoundMode('tts')">🗣️ 只有語音（無音效）</button>
+      <button class="s-mode-btn"    id="mode-silent"  onclick="setSoundMode('silent')">🔇 靜音（全關）</button>
+    </div>
+  </div>
+
+  <!-- ── 字卡管理 ── -->
+  <div id="settings-cards-sec" class="s-sec">
+
+    <div class="admin-tabs" style="margin-bottom:14px;">
+      <button class="admin-tab on" onclick="swAdminTab(this,'admin-custom-cards')">新增字卡</button>
+      <button class="admin-tab" onclick="swAdminTab(this,'admin-daily-manage')">日常對話</button>
+      <button class="admin-tab" onclick="swAdminTab(this,'admin-music-manage')">音樂</button>
+    </div>
+
+    <!-- 新增自訂字卡 -->
+    <div id="admin-custom-cards" class="admin-sec on">
+      <div class="admin-add-form">
+        <div class="admin-form-label">新增自訂字卡</div>
+        <input class="admin-input" id="new-card-emoji" placeholder="表情符號（例如 😊）" maxlength="4">
+        <input class="admin-input" id="new-card-label" placeholder="顯示文字（例如：我很快樂）" maxlength="12">
+        <input class="admin-input" id="new-card-speak" placeholder="語音唸出的話（可與上方相同）" maxlength="20">
+        <select class="admin-input" id="new-card-cat">
+          <option value="comm">溝通用語</option>
+          <option value="feel">😊 我的感受</option>
+          <option value="need">🍽️ 我的需求</option>
+          <option value="num">🔢 數字</option>
+          <option value="other">👥 關於別人</option>
+          <option value="food">🍜 食物喜好</option>
+          <option value="fruit">🍎 水果</option>
+          <option value="sweet">🍰 點心甜食</option>
+          <option value="body">💪 身體狀況</option>
+          <option value="activity">🎯 今天的活動</option>
+          <option value="person">👨‍👩‍👧 家人／朋友</option>
+        </select>
+        <button class="admin-save-btn" onclick="addCustomCard()">新增字卡</button>
+      </div>
+      <div class="admin-sec-label">已新增的自訂字卡</div>
+      <div class="admin-card-list" id="custom-card-list"></div>
+    </div>
+
+    <!-- 日常對話管理（隱藏/顯示） -->
+    <div id="admin-daily-manage" class="admin-sec">
+      <p style="font-size:.78rem;color:rgba(240,230,255,.4);margin-bottom:10px;">按 ✕ 隱藏字卡，按 ⬆ 恢復顯示。</p>
+      <div class="admin-sec-label">溝通用語</div>
+      <div class="admin-card-list" id="admin-list-comm"></div>
+      <div class="admin-sec-label">😊 我的感受</div>
+      <div class="admin-card-list" id="admin-list-feel"></div>
+      <div class="admin-sec-label">🍽️ 我的需求</div>
+      <div class="admin-card-list" id="admin-list-need"></div>
+      <div class="admin-sec-label">🎯 今天的活動</div>
+      <div class="admin-card-list" id="admin-list-act"></div>
+      <div class="admin-sec-label">🍜 食物喜好</div>
+      <div class="admin-card-list" id="admin-list-food"></div>
+      <div class="admin-sec-label">💪 身體狀況</div>
+      <div class="admin-card-list" id="admin-list-body"></div>
+    </div>
+
+    <!-- 音樂管理 -->
+    <div id="admin-music-manage" class="admin-sec">
+      <div class="admin-add-form">
+        <div class="admin-form-label">新增 YouTube 音樂卡</div>
+        <input class="admin-input" id="new-music-emoji" placeholder="表情符號" maxlength="4">
+        <input class="admin-input" id="new-music-title" placeholder="歌曲名稱" maxlength="16">
+        <input class="admin-input" id="new-music-artist" placeholder="歌手名" maxlength="12">
+        <input class="admin-input" id="new-music-url" placeholder="YouTube 網址或影片 ID">
+        <button class="admin-save-btn" onclick="addCustomMusic()">新增音樂</button>
+      </div>
+      <div class="admin-sec-label">已新增的音樂卡</div>
+      <div class="admin-card-list" id="custom-music-list"></div>
+    </div>
+
+  </div><!-- cards-sec -->
+
+</div><!-- settings-panel -->
+
+<!-- Voice drawer (removed, now inside settings) -->
+
+
+<div class="wrap">
+  <div style="position:relative;text-align:center;margin-bottom:4px;">
+    <h1 id="site-title" onclick="startTitleEdit()" title="點我修改標題">🎵 我的音樂世界 🎵</h1>
+    <div id="title-edit-wrap">
+      <input type="text" id="title-input" placeholder="輸入新標題…" maxlength="20">
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:8px;">
+        <button class="rac-btn grn" onclick="saveTitleEdit()" style="padding:7px 18px;font-size:.85rem">✓ 確認</button>
+        <button class="rac-btn" onclick="cancelTitleEdit()" style="padding:7px 18px;font-size:.85rem">✕ 取消</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="swTab(this,'music')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      音樂
+    </button>
+    <button class="tab" onclick="swTab(this,'daily')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      日常對話
+    </button>
+    <button class="tab" onclick="swTab(this,'yn')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+      圈叉
+    </button>
+    <button class="tab" onclick="swTab(this,'battle')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      帥哥對決
+    </button>
+    <button class="tab" onclick="swTab(this,'qa-sec')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      每日問答
+    </button>
+  </div>
+
+  <!-- ══ 音樂 ══ -->
+  <div id="music" class="sec on">
+    <p style="text-align:center;color:rgba(240,230,255,.45);font-size:.82rem;margin-bottom:16px;">▶ 音樂卡片會開啟 YouTube，其他卡片大字顯示</p>
+
+    <div class="gsec">
+      <div class="glabel">😊 開心活潑</div>
+      <div class="grid">
+        <div class="card" onclick="openYT(this,'G5BzWgAtPH4','😊','好東西','蔡依林')"><span class="yt-badge">▶ YT</span><span class="ce">😊</span><div class="cl">好東西</div><div class="cs">蔡依林</div></div>
+        <div class="card" onclick="openYT(this,'b1bHv1FVJ30','🌈','晴天','周杰倫')"><span class="yt-badge">▶ YT</span><span class="ce">🌈</span><div class="cl">晴天</div><div class="cs">周杰倫</div></div>
+        <div class="card" onclick="openYT(this,'T88sPp9E5uo','🎊','最炫民族風','鳳凰傳奇')"><span class="yt-badge">▶ YT</span><span class="ce">🎊</span><div class="cl">最炫民族風</div><div class="cs">鳳凰傳奇</div></div>
+        <div class="card" onclick="openYT(this,'NAODcPQcy9U','✨','愛你','王心凌')"><span class="yt-badge">▶ YT</span><span class="ce">✨</span><div class="cl">愛你</div><div class="cs">王心凌</div></div>
+      </div>
+    </div>
+    <div class="gsec">
+      <div class="glabel">💃 動感跳舞</div>
+      <div class="grid">
+        <div class="card" onclick="openYT(this,'c86t8hoVw8E','💃','Play我呸','蔡依林')"><span class="yt-badge">▶ YT</span><span class="ce">💃</span><div class="cl">Play我呸</div><div class="cs">蔡依林</div></div>
+        <div class="card" onclick="openYT(this,'G9UQ63tWIqA','🎵','告白氣球','周杰倫')"><span class="yt-badge">▶ YT</span><span class="ce">🎵</span><div class="cl">告白氣球</div><div class="cs">周杰倫</div></div>
+        <div class="card" onclick="openYT(this,'IiFm7AWP9n4','🌺','月亮代表我的心','鄧麗君')"><span class="yt-badge">▶ YT</span><span class="ce">🌺</span><div class="cl">月亮代表我的心</div><div class="cs">鄧麗君</div></div>
+        <div class="card" onclick="openYT(this,'eOtATMfvfg8','🌸','甜蜜蜜','鄧麗君')"><span class="yt-badge">▶ YT</span><span class="ce">🌸</span><div class="cl">甜蜜蜜</div><div class="cs">鄧麗君</div></div>
+      </div>
+    </div>
+    <div class="gsec">
+      <div class="glabel">🌙 溫柔放鬆</div>
+      <div class="grid">
+        <div class="card" onclick="openYT(this,'6Q0Pd53mojY','🌙','夜曲','周杰倫')"><span class="yt-badge">▶ YT</span><span class="ce">🌙</span><div class="cl">夜曲</div><div class="cs">周杰倫</div></div>
+        <div class="card" onclick="openYT(this,'UBySINroNkw','🌊','明明就','周杰倫')"><span class="yt-badge">▶ YT</span><span class="ce">🌊</span><div class="cl">明明就</div><div class="cs">周杰倫</div></div>
+        <div class="card" onclick="openYT(this,'DYptgVvkVLQ','☀️','晴天 MV版','周杰倫')"><span class="yt-badge">▶ YT</span><span class="ce">☀️</span><div class="cl">晴天 MV版</div><div class="cs">周杰倫</div></div>
+        <div class="card" onclick="openYT(this,'Aq6KNRyvm-Y','💜','說愛你','蔡依林')"><span class="yt-badge">▶ YT</span><span class="ce">💜</span><div class="cl">說愛你</div><div class="cs">蔡依林</div></div>
+      </div>
+    </div>
+    <div class="gsec">
+      <div class="glabel">💬 我想說</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'more','🙋','還要！','再一次')"><span class="ce">🙋</span><div class="cl">還要！</div><div class="cs">再一次</div></div>
+        <div class="card" onclick="say(this,'stp','✋','停止','夠了')"><span class="ce">✋</span><div class="cl">停止</div><div class="cs">夠了</div></div>
+        <div class="card" onclick="say(this,'love','❤️','我喜歡','愛心音效')"><span class="ce">❤️</span><div class="cl">我喜歡</div><div class="cs">愛心音效</div></div>
+        <div class="card" onclick="say(this,'hello','👋','你好！','打招呼')"><span class="ce">👋</span><div class="cl">你好！</div><div class="cs">打招呼</div></div>
+      </div>
+    </div>
+    <!-- 自訂音樂字卡 -->
+    <div class="gsec" id="custom-music-sec" style="display:none">
+      <div class="glabel">⭐ 自訂音樂</div>
+      <div class="grid" id="custom-music-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ 日常對話 ══ -->
+  <div id="daily" class="sec">
+
+    <!-- 自訂字卡 -->
+    <div class="gsec" id="custom-cards-sec" style="display:none">
+      <div class="glabel">⭐ 我的自訂字卡</div>
+      <div class="grid" id="custom-cards-grid"></div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">溝通用語</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'thanks','🙏','謝謝你','感謝！')"><span class="ce">🙏</span><div class="cl">謝謝你</div><div class="cs">感謝！</div></div>
+        <div class="card" onclick="say(this,'notok','❓','我不懂','聽不懂')"><span class="ce">❓</span><div class="cl">我不懂</div><div class="cs">聽不懂</div></div>
+        <div class="card" onclick="say(this,'wanthelp','🙋','我想幫忙','讓我來幫你！')"><span class="ce">🙋</span><div class="cl">我想幫忙</div><div class="cs">讓我來幫你！</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">😊 我的感受</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'happy','😄','我很開心','超開心！')"><span class="ce">😄</span><div class="cl">我很開心</div><div class="cs">超開心！</div></div>
+        <div class="card" onclick="say(this,'sad','😢','我不開心','有點難過')"><span class="ce">😢</span><div class="cl">我不開心</div><div class="cs">有點難過</div></div>
+        <div class="card" onclick="say(this,'scared','😨','我害怕','好可怕')"><span class="ce">😨</span><div class="cl">我害怕</div><div class="cs">好可怕</div></div>
+        <div class="card" onclick="say(this,'tired','😴','我很累','想休息')"><span class="ce">😴</span><div class="cl">我很累</div><div class="cs">想休息</div></div>
+        <div class="card" onclick="say(this,'pain','😖','我不舒服','有點痛')"><span class="ce">😖</span><div class="cl">我不舒服</div><div class="cs">有點痛</div></div>
+        <div class="card" onclick="say(this,'excited','🤩','好興奮！','期待！')"><span class="ce">🤩</span><div class="cl">好興奮！</div><div class="cs">期待！</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🍽️ 我的需求</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'water','💧','想喝水','口渴了')"><span class="ce">💧</span><div class="cl">想喝水</div><div class="cs">口渴了</div></div>
+        <div class="card" onclick="say(this,'eat','🍱','想吃東西','肚子餓了')"><span class="ce">🍱</span><div class="cl">想吃東西</div><div class="cs">肚子餓了</div></div>
+        <div class="card" onclick="say(this,'toilet','🚽','要上廁所','很急！')"><span class="ce">🚽</span><div class="cl">要上廁所</div><div class="cs">很急！</div></div>
+        <div class="card" onclick="say(this,'home','🏠','想回家','我想回家')"><span class="ce">🏠</span><div class="cl">想回家</div><div class="cs">我想回家</div></div>
+        <div class="card" onclick="say(this,'sleep','🛏️','想睡覺','好想躺下')"><span class="ce">🛏️</span><div class="cl">想睡覺</div><div class="cs">好想躺下</div></div>
+        <div class="card" onclick="say(this,'outside','🌳','想出去','想去外面')"><span class="ce">🌳</span><div class="cl">想出去</div><div class="cs">想去外面</div></div>
+        <div class="card" onclick="say(this,'musicwant','🎵','想聽音樂','放音樂！')"><span class="ce">🎵</span><div class="cl">想聽音樂</div><div class="cs">放音樂！</div></div>
+        <div class="card" onclick="say(this,'hug','🤗','想抱抱','需要抱抱')"><span class="ce">🤗</span><div class="cl">想抱抱</div><div class="cs">需要抱抱</div></div>
+        <div class="card" onclick="say(this,'chat','💬','想聊天','跟我說說話')"><span class="ce">💬</span><div class="cl">想聊天</div><div class="cs">跟我說說話</div></div>
+        <div class="card" onclick="say(this,'handhold','🖐️','想牽手','牽著我')"><span class="ce">🖐️</span><div class="cl">想牽手</div><div class="cs">牽著我</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🔢 數字</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'n1','1️⃣','一','1')"><span class="ce">1️⃣</span><div class="cl">一</div></div>
+        <div class="card" onclick="say(this,'n2','2️⃣','二','2')"><span class="ce">2️⃣</span><div class="cl">二</div></div>
+        <div class="card" onclick="say(this,'n3','3️⃣','三','3')"><span class="ce">3️⃣</span><div class="cl">三</div></div>
+        <div class="card" onclick="say(this,'n4','4️⃣','四','4')"><span class="ce">4️⃣</span><div class="cl">四</div></div>
+        <div class="card" onclick="say(this,'n5','5️⃣','五','5')"><span class="ce">5️⃣</span><div class="cl">五</div></div>
+        <div class="card" onclick="say(this,'n6','6️⃣','六','6')"><span class="ce">6️⃣</span><div class="cl">六</div></div>
+        <div class="card" onclick="say(this,'n7','7️⃣','七','7')"><span class="ce">7️⃣</span><div class="cl">七</div></div>
+        <div class="card" onclick="say(this,'n8','8️⃣','八','8')"><span class="ce">8️⃣</span><div class="cl">八</div></div>
+        <div class="card" onclick="say(this,'n9','9️⃣','九','9')"><span class="ce">9️⃣</span><div class="cl">九</div></div>
+        <div class="card" onclick="say(this,'n10','🔟','十','10')"><span class="ce">🔟</span><div class="cl">十</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">👥 關於別人</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'know','🤝','我認識他','我知道這人')"><span class="ce">🤝</span><div class="cl">我認識他</div><div class="cs">我知道這人</div></div>
+        <div class="card" onclick="say(this,'dontknow','🤷','我不認識','不知道是誰')"><span class="ce">🤷</span><div class="cl">我不認識</div><div class="cs">不知道是誰</div></div>
+        <div class="card" onclick="say(this,'friend','👯','想找朋友','想一起玩')"><span class="ce">👯</span><div class="cl">想找朋友</div><div class="cs">想一起玩</div></div>
+        <div class="card" onclick="say(this,'alone','🧘','想一個人','需要安靜')"><span class="ce">🧘</span><div class="cl">想一個人</div><div class="cs">需要安靜</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">👨‍👩‍👧 家人／朋友</div>
+      <div class="grid" id="person-grid">
+        <div class="card" onclick="say(this,'f_mom','👩','媽媽','我想媽媽')"><span class="ce">👩</span><div class="cl">媽媽</div></div>
+        <div class="card" onclick="say(this,'f_dad','👨','爸爸','我想爸爸')"><span class="ce">👨</span><div class="cl">爸爸</div></div>
+        <div class="card" onclick="say(this,'f_sis1','👩','姊姊','我想姊姊')"><span class="ce">👩</span><div class="cl">姊姊</div></div>
+        <div class="card" onclick="say(this,'f_sis2','👧','妹妹','我想妹妹')"><span class="ce">👧</span><div class="cl">妹妹</div></div>
+        <div class="card" onclick="say(this,'f_bro1','👨','哥哥','我想哥哥')"><span class="ce">👨</span><div class="cl">哥哥</div></div>
+        <div class="card" onclick="say(this,'f_bro2','👦','弟弟','我想弟弟')"><span class="ce">👦</span><div class="cl">弟弟</div></div>
+        <div class="card" onclick="say(this,'f_friend','🧑','我的朋友','好朋友')"><span class="ce">🧑</span><div class="cl">我的朋友</div></div>
+        <div class="card" onclick="say(this,'f_teacher','👩‍🏫','老師','謝謝老師')"><span class="ce">👩‍🏫</span><div class="cl">老師</div></div>
+        <div class="card" onclick="say(this,'f_miss','💭','我想他了','好想念')"><span class="ce">💭</span><div class="cl">我想他了</div></div>
+        <div class="card" onclick="say(this,'f_together','🤝','想一起玩','我們一起')"><span class="ce">🤝</span><div class="cl">想一起玩</div></div>
+      </div>
+      <!-- 自訂人物卡片 -->
+      <div style="margin-top:12px;">
+        <div class="glabel" style="margin-bottom:8px;">➕ 自訂人物</div>
+        <p style="font-size:.76rem;color:rgba(240,230,255,.4);margin-bottom:10px;">上傳照片、輸入名字，建立專屬卡片</p>
+        <div class="grid" id="person-custom-grid"></div>
+        <button class="add-person-btn" onclick="openPersonEditor(-1)">新增人物</button>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🍜 食物喜好</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'fd_yummy','😋','好好吃','讚！')"><span class="ce">😋</span><div class="cl">好好吃</div><div class="cs">讚！</div></div>
+        <div class="card" onclick="say(this,'fd_notgood','🤢','不好吃','不喜歡這個')"><span class="ce">🤢</span><div class="cl">不好吃</div><div class="cs">不喜歡這個</div></div>
+        <div class="card" onclick="say(this,'fd_noodle','🍜','我想吃麵','麵麵麵')"><span class="ce">🍜</span><div class="cl">想吃麵</div><div class="cs">麵麵麵</div></div>
+        <div class="card" onclick="say(this,'fd_rice','🍚','我想吃飯','白飯！')"><span class="ce">🍚</span><div class="cl">想吃飯</div><div class="cs">白飯！</div></div>
+        <div class="card" onclick="say(this,'fd_drink','🧋','我想喝飲料','好想喝')"><span class="ce">🧋</span><div class="cl">想喝飲料</div><div class="cs">好想喝</div></div>
+        <div class="card" onclick="say(this,'fd_full','🫃','我吃飽了','不用了謝謝')"><span class="ce">🫃</span><div class="cl">我吃飽了</div><div class="cs">不用了謝謝</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🍎 水果</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'fr_apple','🍎','蘋果','我想吃蘋果')"><span class="ce">🍎</span><div class="cl">蘋果</div></div>
+        <div class="card" onclick="say(this,'fr_banana','🍌','香蕉','我想吃香蕉')"><span class="ce">🍌</span><div class="cl">香蕉</div></div>
+        <div class="card" onclick="say(this,'fr_grape','🍇','葡萄','我想吃葡萄')"><span class="ce">🍇</span><div class="cl">葡萄</div></div>
+        <div class="card" onclick="say(this,'fr_water','🍉','西瓜','我想吃西瓜')"><span class="ce">🍉</span><div class="cl">西瓜</div></div>
+        <div class="card" onclick="say(this,'fr_orange','🍊','橘子','我想吃橘子')"><span class="ce">🍊</span><div class="cl">橘子</div></div>
+        <div class="card" onclick="say(this,'fr_straw','🍓','草莓','我想吃草莓')"><span class="ce">🍓</span><div class="cl">草莓</div></div>
+        <div class="card" onclick="say(this,'fr_mango','🥭','芒果','我想吃芒果')"><span class="ce">🥭</span><div class="cl">芒果</div></div>
+        <div class="card" onclick="say(this,'fr_peach','🍑','水蜜桃','我想吃水蜜桃')"><span class="ce">🍑</span><div class="cl">水蜜桃</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🍰 點心甜食</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'sw_cookie','🍪','餅乾','我想吃餅乾')"><span class="ce">🍪</span><div class="cl">餅乾</div></div>
+        <div class="card" onclick="say(this,'sw_cake','🍰','蛋糕','我想吃蛋糕')"><span class="ce">🍰</span><div class="cl">蛋糕</div></div>
+        <div class="card" onclick="say(this,'sw_candy','🍬','糖果','我想吃糖果')"><span class="ce">🍬</span><div class="cl">糖果</div></div>
+        <div class="card" onclick="say(this,'sw_choco','🍫','巧克力','我想吃巧克力')"><span class="ce">🍫</span><div class="cl">巧克力</div></div>
+        <div class="card" onclick="say(this,'sw_ice','🍦','冰淇淋','我想吃冰淇淋')"><span class="ce">🍦</span><div class="cl">冰淇淋</div></div>
+        <div class="card" onclick="say(this,'sw_pudding','🍮','布丁','我想吃布丁')"><span class="ce">🍮</span><div class="cl">布丁</div></div>
+        <div class="card" onclick="say(this,'sw_bread','🧁','小蛋糕','我想吃小蛋糕')"><span class="ce">🧁</span><div class="cl">小蛋糕</div></div>
+        <div class="card" onclick="say(this,'sw_jelly','🟡','果凍','我想吃果凍')"><span class="ce">🟡</span><div class="cl">果凍</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">💪 身體狀況</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'b_fine','💪','我很好','身體健康')"><span class="ce">💪</span><div class="cl">我很好</div><div class="cs">身體健康</div></div>
+        <div class="card" onclick="say(this,'b_headache','🤕','頭很痛','頭好痛')"><span class="ce">🤕</span><div class="cl">頭很痛</div><div class="cs">頭好痛</div></div>
+        <div class="card" onclick="say(this,'b_stomach','🤢','肚子不舒服','肚子痛')"><span class="ce">🤢</span><div class="cl">肚子不舒服</div><div class="cs">肚子痛</div></div>
+        <div class="card" onclick="say(this,'b_leg','🦵','腳很痠','走太多路')"><span class="ce">🦵</span><div class="cl">腳很痠</div><div class="cs">走太多路</div></div>
+        <div class="card" onclick="say(this,'b_sleepy','😪','我很想睡','眼睛閉起來')"><span class="ce">😪</span><div class="cl">我很想睡</div><div class="cs">眼睛閉起來</div></div>
+        <div class="card" onclick="say(this,'b_energy','⚡','我很有精神','活力充沛')"><span class="ce">⚡</span><div class="cl">很有精神</div><div class="cs">活力充沛</div></div>
+        <div class="card" onclick="say(this,'b_hot','🌡️','我發燒了','好不舒服')"><span class="ce">🌡️</span><div class="cl">我發燒了</div><div class="cs">好不舒服</div></div>
+        <div class="card" onclick="say(this,'b_better','😌','我好多了','謝謝關心')"><span class="ce">😌</span><div class="cl">我好多了</div><div class="cs">謝謝關心</div></div>
+      </div>
+    </div>
+
+    <div class="gsec">
+      <div class="glabel">🎯 今天的活動</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'act_clean','🧹','打掃','今天有打掃')"><span class="ce">🧹</span><div class="cl">打掃</div></div>
+        <div class="card" onclick="say(this,'act_church','⛪','禮拜','今天去禮拜')"><span class="ce">⛪</span><div class="cl">禮拜</div></div>
+        <div class="card" onclick="say(this,'act_class','📚','上課','今天有上課')"><span class="ce">📚</span><div class="cl">上課</div></div>
+        <div class="card" onclick="say(this,'act_walk','🚶','散步','今天去散步')"><span class="ce">🚶</span><div class="cl">散步</div></div>
+        <div class="card" onclick="say(this,'act_shop','🛒','買東西','今天去買東西')"><span class="ce">🛒</span><div class="cl">買東西</div></div>
+        <div class="card" onclick="say(this,'act_board','🎲','玩桌遊','今天玩桌遊')"><span class="ce">🎲</span><div class="cl">玩桌遊</div></div>
+        <div class="card" onclick="say(this,'act_sing','🎤','唱歌','今天有唱歌')"><span class="ce">🎤</span><div class="cl">唱歌</div></div>
+        <div class="card" onclick="say(this,'act_video','🎬','看影片','今天看影片')"><span class="ce">🎬</span><div class="cl">看影片</div></div>
+        <div class="card" onclick="say(this,'act_eat','🍽️','吃東西','今天吃東西')"><span class="ce">🍽️</span><div class="cl">吃東西</div></div>
+      </div>
+    </div>
+
+    <!-- 帥哥照片 -->
+    <div class="gsec">
+      <div class="glabel">😍 帥哥照片</div>
+      <p style="font-size:.78rem;color:rgba(240,230,255,.45);margin-bottom:10px;">點「＋ 新增」上傳自己喜歡的帥哥照片</p>
+      <div class="grid" id="hunk-grid">
+        <div class="card add-card" onclick="document.getElementById('hunk-upload').click()">
+          <span class="ce">➕</span>
+          <div class="cl">新增照片</div>
+          <div class="cs">點我上傳</div>
+        </div>
+      </div>
+      <input type="file" id="hunk-upload" accept="image/*" multiple style="display:none" onchange="addHunkPhotos(event)">
+    </div>
+
+    <!-- 職業 -->
+    <div class="gsec">
+      <div class="glabel">👔 職業</div>
+      <div class="grid">
+        <div class="card" onclick="say(this,'j_doctor','👨‍⚕️','醫生','看診治病')"><span class="ce">👨‍⚕️</span><div class="cl">醫生</div><div class="cs">看診治病</div></div>
+        <div class="card" onclick="say(this,'j_nurse','👩‍⚕️','護理師','照顧病人')"><span class="ce">👩‍⚕️</span><div class="cl">護理師</div><div class="cs">照顧病人</div></div>
+        <div class="card" onclick="say(this,'j_teacher','👩‍🏫','老師','教書育人')"><span class="ce">👩‍🏫</span><div class="cl">老師</div><div class="cs">教書育人</div></div>
+        <div class="card" onclick="say(this,'j_police','👮','警察','保護大家')"><span class="ce">👮</span><div class="cl">警察</div><div class="cs">保護大家</div></div>
+        <div class="card" onclick="say(this,'j_fire','🧑‍🚒','消防員','救火英雄')"><span class="ce">🧑‍🚒</span><div class="cl">消防員</div><div class="cs">救火英雄</div></div>
+        <div class="card" onclick="say(this,'j_chef','👨‍🍳','廚師','煮好料理')"><span class="ce">👨‍🍳</span><div class="cl">廚師</div><div class="cs">煮好料理</div></div>
+        <div class="card" onclick="say(this,'j_engineer','👨‍💻','工程師','蓋東西')"><span class="ce">👨‍💻</span><div class="cl">工程師</div><div class="cs">蓋東西</div></div>
+        <div class="card" onclick="say(this,'j_singer','🎤','歌手','唱歌給你聽')"><span class="ce">🎤</span><div class="cl">歌手</div><div class="cs">唱歌給你聽</div></div>
+        <div class="card" onclick="say(this,'j_athlete','⚽','運動員','超厲害')"><span class="ce">⚽</span><div class="cl">運動員</div><div class="cs">超厲害</div></div>
+        <div class="card" onclick="say(this,'j_pilot','✈️','飛行員','開飛機')"><span class="ce">✈️</span><div class="cl">飛行員</div><div class="cs">開飛機</div></div>
+        <div class="card" onclick="say(this,'j_driver','🚌','司機','開車載人')"><span class="ce">🚌</span><div class="cl">司機</div><div class="cs">開車載人</div></div>
+        <div class="card" onclick="say(this,'j_farmer','🧑‍🌾','農夫','種菜種田')"><span class="ce">🧑‍🌾</span><div class="cl">農夫</div><div class="cs">種菜種田</div></div>
+      </div>
+    </div>
+
+  </div>
+  <div id="yn" class="sec">
+    <div class="ynw">
+      <div class="ynq">
+        <label>問題（可以輸入）</label>
+        <input type="text" id="qinput" value="你喜歡這首歌嗎？">
+      </div>
+      <div id="yndsp">👇 按下按鈕回答問題</div>
+      <div class="ynbtns">
+        <button class="ynb yes" onclick="ansYN('yes')"><span class="ybe">⭕</span></button>
+        <button class="ynb no"  onclick="ansYN('no')"><span class="ybe">❌</span></button>
+      </div>
+      <p style="color:rgba(240,230,255,.4);font-size:.82rem;text-align:center">按圈或叉會全螢幕顯示＋語音 🎵</p>
+    </div>
+  </div>
+
+  <!-- ══ 每日問答（獨立頁籤）══ -->
+  <!-- ══ 帥哥大對決 ══ -->
+  <div id="battle" class="sec">
+
+    <!-- 管理帥哥 -->
+    <div id="battle-manage" style="margin-bottom:20px;">
+      <div class="glabel">😍 帥哥名單（至少需要 2 位）</div>
+
+      <!-- Unsplash 搜尋 -->
+      <div class="unsplash-bar">
+        <input type="text" id="unsplash-query" class="admin-input" placeholder="搜尋帥哥照片（建議英文，例如：handsome man、korean actor）" style="margin-bottom:8px;">
+        <button class="admin-save-btn" onclick="searchUnsplash()" style="margin-bottom:12px;">🔍 搜尋照片</button>
+        <div id="unsplash-results" class="grid"></div>
+        <p id="unsplash-hint" style="font-size:.74rem;color:rgba(240,230,255,.35);margin-top:6px;display:none;">點照片加入名單</p>
+      </div>
+
+      <div class="glabel" style="margin-top:14px;">已加入的帥哥</div>
+      <div class="grid" id="battle-roster"></div>
+      <button class="add-person-btn" onclick="document.getElementById('battle-upload').click()">➕ 或自行上傳照片</button>
+      <input type="file" id="battle-upload" accept="image/*" multiple style="display:none" onchange="addBattleHunk(event)">
+    </div>
+
+    <!-- 開始按鈕 -->
+    <div id="battle-start-wrap" style="text-align:center;margin-bottom:20px;">
+      <button id="battle-start-btn" onclick="startBattle()">🏆 開始對決！</button>
+    </div>
+
+    <!-- 對決競技場 -->
+    <div id="battle-arena" style="display:none">
+      <div id="battle-round-info"></div>
+      <div id="battle-vs-row">
+        <div class="battle-slot" id="bslot-a" onclick="pickBattle('a')"></div>
+        <div id="battle-vs">VS</div>
+        <div class="battle-slot" id="bslot-b" onclick="pickBattle('b')"></div>
+      </div>
+      <p style="text-align:center;color:rgba(240,230,255,.4);font-size:.85rem;margin-top:12px;">點你最喜歡的那一個 😍</p>
+    </div>
+
+    <!-- 結果頁 -->
+    <div id="battle-result" style="display:none">
+      <div id="br-trophy">🏆</div>
+      <div id="br-title">最喜歡的帥哥！</div>
+      <div id="br-winner-img-wrap"><img id="br-winner-img" src="" alt=""></div>
+      <div id="br-winner-name"></div>
+      <div id="br-score-list"></div>
+      <button class="add-person-btn" style="margin-top:16px" onclick="resetBattle()">🔄 再來一輪</button>
+    </div>
+
+  </div>
+
+  <div id="qa-sec" class="sec">
+
+    <!-- 名字輸入彈窗 -->
+    <div id="name-modal">
+      <div id="name-box">
+        <div id="name-emoji">👋</div>
+        <div id="name-title">你叫什麼名字？</div>
+        <input id="name-input" type="text" placeholder="輸入名字…" maxlength="10">
+        <button id="name-confirm" onclick="confirmName()">確認 ✓</button>
+      </div>
+    </div>
+
+    <!-- 歡迎彈窗（進入每日問答時顯示）-->
+    <div id="welcome-popup">
+      <div id="welcome-box">
+        <div id="welcome-emoji">🌟</div>
+        <div id="welcome-msg"></div>
+        <button id="welcome-ok" onclick="closeWelcome()">開始！ ▶</button>
+      </div>
+    </div>
+
+    <!-- 問候列 -->
+    <div id="qa2-greeting"></div>
+
+    <!-- 模式切換 -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;justify-content:center;">
+      <button class="rtab on" id="qa2-mode-seq"  onclick="qa2SetMode('seq')">▶ 依序作答</button>
+      <button class="rtab"    id="qa2-mode-jump" onclick="qa2SetMode('jump')">📋 題目清單</button>
+    </div>
+
+    <!-- 題目清單（快速跳題）-->
+    <div id="qa2-list" style="display:none">
+      <div id="qa2-list-inner"></div>
+    </div>
+
+    <!-- 依序作答 -->
+    <div id="qa2-seq">
+      <div id="qa2-date-bar"></div>
+      <div id="qa2-progress-bar"><div id="qa2-progress-fill"></div></div>
+      <div id="qa2-question-wrap">
+        <div id="qa2-category"></div>
+        <div id="qa2-qnum"></div>
+        <div id="qa2-question"></div>
+      </div>
+      <div id="qa2-choices" class="grid" style="grid-template-columns:repeat(2,1fr);gap:14px;"></div>
+      <div id="qa2-done" style="display:none">
+        <div style="font-size:3.5rem;text-align:center;margin-bottom:10px">🎉</div>
+        <div id="qa2-done-title" style="font-size:1.3rem;font-weight:900;text-align:center;margin-bottom:14px">今天的問答完成了！</div>
+        <div id="qa2-done-summary"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap">
+          <button class="rac-btn grn" onclick="qa2CopyResult()">📋 複製今天的記錄</button>
+          <button class="rac-btn" onclick="qa2Restart()">🔄 重新開始</button>
+        </div>
+        <p id="qa2-copied" style="text-align:center;color:var(--yes);font-size:.85rem;margin-top:8px;display:none">✅ 已複製！</p>
+      </div>
+      <div id="qa2-nav" style="margin-top:14px;display:flex;gap:8px;justify-content:center">
+        <button class="rac-btn" onclick="qa2Back()">← 上一題</button>
+        <button class="rac-btn grn" onclick="qa2Skip()">跳過 →</button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Person editor modal -->
+<div id="person-modal">
+  <div id="person-box">
+    <h3 id="person-modal-title">新增人物</h3>
+    <input type="text" id="person-name-in" placeholder="輸入名字…" maxlength="10" oninput="previewDicebear()">
+
+    <!-- Avatar picker tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="pmb pmb-cancel" id="avatar-tab-dice" onclick="switchAvatarTab('dice')" style="flex:1;padding:8px;font-size:.82rem;">🎨 自動頭像</button>
+      <button class="pmb pmb-cancel" id="avatar-tab-upload" onclick="switchAvatarTab('upload')" style="flex:1;padding:8px;font-size:.82rem;">📷 上傳照片</button>
+    </div>
+
+    <!-- Dicebear style picker -->
+    <div id="avatar-dice-panel">
+      <div id="dicebear-preview-wrap" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>
+      <p style="font-size:.72rem;color:rgba(240,230,255,.4);text-align:center;">點選喜歡的頭像風格</p>
+    </div>
+
+    <!-- Upload panel -->
+    <div id="avatar-upload-panel" style="display:none;">
+      <div id="person-preview" onclick="document.getElementById('person-img-upload').click()">📷</div>
+      <input type="file" id="person-img-upload" accept="image/*" style="display:none" onchange="personPreviewImg(event)">
+    </div>
+
+    <div class="person-modal-btns">
+      <button class="pmb pmb-save" onclick="savePerson()">💾 儲存</button>
+      <button class="pmb pmb-del" id="person-del-btn" onclick="deletePerson()" style="display:none">🗑️ 刪除</button>
+      <button class="pmb pmb-cancel" onclick="closePersonEditor()">取消</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ── TTS：純瀏覽器原生，不依賴第三方 ──
+var VOICE_PRESETS = [
+  { id:'f1', label:'👩 女聲清晰',   pitch:1.05, rate:0.88 },
+  { id:'f2', label:'🌸 柔和女聲',   pitch:1.20, rate:0.85 },
+  { id:'m1', label:'👨 男聲標準',   pitch:0.60, rate:0.85 },
+  { id:'m2', label:'🎙️ 低沉男聲', pitch:0.35, rate:0.80 },
+];
+var currentPreset = VOICE_PRESETS[0];
+var zhVoice = null;
+
+function pickVoice() {
+  var voices = window.speechSynthesis.getVoices();
+  // 優先順序：zh-TW > zh-CN > zh
+  var picked =
+    voices.find(function(v){ return v.lang === 'zh-TW'; }) ||
+    voices.find(function(v){ return v.lang === 'zh-CN'; }) ||
+    voices.find(function(v){ return v.lang.indexOf('zh') === 0; }) ||
+    null;
+  if (picked) zhVoice = picked;
+}
+
+function buildVoiceUI() {
+  pickVoice();
+  var wrap = document.getElementById('voice-options');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  VOICE_PRESETS.forEach(function(p, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'vbtn preset' + (idx===0 ? ' on' : '');
+    btn.innerHTML = p.label + ' <span class="vtag">試聽</span>';
+    btn.onclick = function() {
+      currentPreset = p;
+      document.querySelectorAll('.vbtn.preset').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      speak('你好！我很開心！');
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  // 短暫延遲確保 cancel 生效（iOS 需要）
+  setTimeout(function() {
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang   = 'zh-TW';
+    u.pitch  = currentPreset.pitch;
+    u.rate   = currentPreset.rate;
+    u.volume = 1.0;
+    if (!zhVoice) pickVoice();
+    if (zhVoice) u.voice = zhVoice;
+    window.speechSynthesis.speak(u);
+  }, 50);
+}
+
+// 預先載入語音清單
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = function() { pickVoice(); buildVoiceUI(); };
+}
+document.addEventListener('DOMContentLoaded', buildVoiceUI);
+if (document.readyState !== 'loading') buildVoiceUI();
+
+// ── Audio SFX ──
+var AC = null;
+function getAC() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(g, f, s, d, tp, v) {
+  var ac=getAC(), o=ac.createOscillator(), gg=ac.createGain();
+  o.type=tp||'sine'; o.frequency.value=f;
+  gg.gain.setValueAtTime(.001,ac.currentTime+s);
+  gg.gain.linearRampToValueAtTime(v||.3,ac.currentTime+s+.02);
+  gg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+s+d);
+  o.connect(gg);gg.connect(g);o.start(ac.currentTime+s);o.stop(ac.currentTime+s+d+.05);
+}
+function drum(g,s,kick){
+  var ac=getAC(),o=ac.createOscillator(),gg=ac.createGain();
+  if(kick){o.frequency.setValueAtTime(150,ac.currentTime+s);o.frequency.exponentialRampToValueAtTime(.001,ac.currentTime+s+.3);gg.gain.setValueAtTime(.7,ac.currentTime+s);gg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+s+.3);}
+  else{o.type='sawtooth';o.frequency.value=180;gg.gain.setValueAtTime(.18,ac.currentTime+s);gg.gain.exponentialRampToValueAtTime(.001,ac.currentTime+s+.1);}
+  o.connect(gg);gg.connect(g);o.start(ac.currentTime+s);o.stop(ac.currentTime+s+.35);
+}
+function mkG(){var ac=getAC(),g=ac.createGain();g.gain.value=.45;g.connect(ac.destination);return g;}
+
+var N={C4:262,D4:294,E4:330,F4:349,G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784,A5:880,Bb4:466,Ab4:415,Gb4:370,Eb5:622};
+
+var SFX={
+  more:     function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.18,.15,'sine',.28);});},
+  stp:      function(g){[N.C5,N.A4,N.F4].forEach(function(f,i){tone(g,f,i*.2,.25,'triangle',.24);});},
+  love:     function(g){[N.E5,N.G5,N.B4,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.22,.3,'sine',.26);});},
+  hello:    function(g){[N.C5,N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.18,'sine',.28);});},
+  like:     function(g){[N.E5,N.G5,N.B4,N.E5*2].forEach(function(f,i){tone(g,f,i*.16,.22,'sine',.28);});},
+  dislike:  function(g){[N.E5,N.Eb5,N.D5,N.C5].forEach(function(f,i){tone(g,f,i*.18,.25,'triangle',.24);});},
+  happy:    function(g){[N.C5,N.E5,N.G5,N.C5*2,N.G5].forEach(function(f,i){tone(g,f,i*.17,.16,'sine',.24);});for(var i=0;i<4;i++)drum(g,i*.27,true);},
+  sad:      function(g){[N.G4,N.F4,147,N.D4].forEach(function(f,i){tone(g,f,i*.4,.5,'sine',.22);});},
+  scared:   function(g){[N.C5,N.B4,N.Bb4,N.A4,N.Ab4].forEach(function(f,i){tone(g,f,i*.12,.14,'sawtooth',.16);});},
+  tired:    function(g){[N.G4,N.E4,N.C4].forEach(function(f,i){tone(g,f,i*.5,.65,'sine',.2);});},
+  pain:     function(g){[N.A4,N.Ab4,N.G4].forEach(function(f,i){tone(g,f,i*.22,.3,'sawtooth',.17);});},
+  excited:  function(g){[N.C5,N.E5,N.G5,N.A5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.14,.13,'square',.22);});for(var i=0;i<5;i++)drum(g,i*.2,i%2===0);},
+  water:    function(g){[N.C5,N.G5,N.E5,N.C5*2].forEach(function(f,i){tone(g,f,i*.2,.18,'sine',.24);});},
+  eat:      function(g){[N.G4,N.A4,N.B4,N.C5,N.D5,N.E5].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.24);});},
+  toilet:   function(g){[N.C5,N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.1,.09,'square',.24);tone(g,f,i*.1+.45,.09,'square',.24);});},
+  home:     function(g){[N.C4,N.E4,N.G4,N.C5,N.E5,N.G5,N.C5].forEach(function(f,i){tone(g,f,i*.22,.28,'sine',.24);});},
+  sleep:    function(g){[N.G4,N.E4,N.C4,196,130].forEach(function(f,i){tone(g,f,i*.55,.65,'sine',.19);});},
+  outside:  function(g){[N.C5,N.D5,N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.22);});},
+  musicwant:function(g){[N.E5,N.G5,N.A5,N.G5,N.E5,N.C5*2].forEach(function(f,i){tone(g,f,i*.2,.18,'sine',.24);});},
+  hug:      function(g){[N.C5,N.E5,N.G5,N.E5,N.C5].forEach(function(f,i){tone(g,f,i*.3,.4,'sine',.22);});},
+  know:     function(g){[N.C5,N.E5,N.G5,N.C5*2,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  dontknow: function(g){[N.G4,N.A4,N.G4,N.F4,N.G4].forEach(function(f,i){tone(g,f,i*.2,.22,'triangle',.22);});},
+  friend:   function(g){[N.C5,N.D5,N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.18,.16,'sine',.24);});for(var i=0;i<4;i++)drum(g,i*.27,true);},
+  alone:    function(g){[N.C5,N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.6,.65,'sine',.19);});},
+  yes2:     function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.3);});},
+  no2:      function(g){[N.A4,N.Ab4,N.G4,N.Gb4].forEach(function(f,i){tone(g,f,i*.15,.22,'sawtooth',.19);});},
+  wait:     function(g){[N.C5,N.C5,N.C5].forEach(function(f,i){tone(g,f,i*.35,.18,'sine',.22);});},
+  help:     function(g){[N.C5,N.E5,N.G5,N.A5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.15,.14,'square',.24);});for(var i=0;i<3;i++)drum(g,i*.18,true);},
+  thanks:   function(g){[N.E5,N.G5,N.B4,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.22,.3,'sine',.26);});},
+  again:    function(g){[[N.C5,0],[N.E5,.2],[N.G5,.4],[N.C5,.7],[N.E5,.9]].forEach(function(x){tone(g,x[0],x[1],.18,'sine',.22);});},
+  ok:       function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.28);});tone(g,N.C5*2,.6,.4,'sine',.24);},
+  notok:    function(g){[N.G4,N.A4,N.G4,N.Bb4,N.G4].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.22);});},
+  // 天氣／感覺
+  t_sunny:  function(g){[N.C5,N.E5,N.G5,N.A5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.18,'sine',.28);});},
+  t_hot:    function(g){[N.A5,N.G5,N.E5,N.D5].forEach(function(f,i){tone(g,f,i*.18,.22,'sawtooth',.2);});},
+  t_cold:   function(g){[N.C5,N.B4,N.A4,N.G4].forEach(function(f,i){tone(g,f,i*.2,.3,'sine',.2);});},
+  t_rain:   function(g){[N.D5,N.C5,N.B4,N.A4,N.G4].forEach(function(f,i){tone(g,f,i*.22,.28,'sine',.2);});},
+  t_good:   function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.28);});},
+  t_bad:    function(g){[N.G4,N.F4,N.E4,N.D4].forEach(function(f,i){tone(g,f,i*.3,.4,'sine',.22);});},
+  t_ok:     function(g){[N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.25,'sine',.25);});},
+  t_bored:  function(g){[N.C5,N.C5,N.B4,N.C5].forEach(function(f,i){tone(g,f,i*.35,.3,'sine',.2);});},
+  // 家人
+  f_mom:    function(g){[N.C5,N.E5,N.G5,N.E5,N.C5].forEach(function(f,i){tone(g,f,i*.22,.3,'sine',.26);});},
+  f_dad:    function(g){[N.C4,N.E4,N.G4,N.C5].forEach(function(f,i){tone(g,f,i*.22,.3,'triangle',.26);});},
+  f_sister: function(g){[N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.24);});},
+  f_brother:function(g){[N.E4,N.G4,N.A4,N.G4].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.24);});},
+  f_sis1:   function(g){[N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  f_sis2:   function(g){[N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  f_bro1:   function(g){[N.E4,N.G4,N.A4,N.C5].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.26);});},
+  f_bro2:   function(g){[N.G4,N.A4,N.G4,N.E4].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.26);});},
+  chat:     function(g){[N.C5,N.E5,N.G5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.18,'sine',.26);});},
+  handhold: function(g){[N.C5,N.E5,N.G5,N.E5,N.C5].forEach(function(f,i){tone(g,f,i*.22,.3,'sine',.26);});},
+  wanthelp: function(g){[N.C5,N.E5,N.G5,N.A5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.14,.18,'sine',.3);});for(var i=0;i<3;i++) drum(g,i*.22,true);},
+  // 數字
+  n1:function(g){tone(g,N.C5,0,.3,'sine',.3);},
+  n2:function(g){[N.C5,N.D5].forEach(function(f,i){tone(g,f,i*.2,.25,'sine',.28);});},
+  n3:function(g){[N.C5,N.D5,N.E5].forEach(function(f,i){tone(g,f,i*.18,.22,'sine',.26);});},
+  n4:function(g){[N.C5,N.D5,N.E5,N.F5].forEach(function(f,i){tone(g,f,i*.16,.2,'sine',.26);});},
+  n5:function(g){[N.C5,N.D5,N.E5,N.F5,N.G5].forEach(function(f,i){tone(g,f,i*.14,.18,'sine',.26);});},
+  n6:function(g){[N.C5,N.D5,N.E5,N.F5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.13,.16,'sine',.24);});},
+  n7:function(g){[N.C5,N.D5,N.E5,N.F5,N.G5,N.A5,N.B4].forEach(function(f,i){tone(g,f,i*.12,.15,'sine',.24);});},
+  n8:function(g){[N.C5,N.D5,N.E5,N.G5,N.A5,N.G5,N.E5,N.C5*2].forEach(function(f,i){tone(g,f,i*.11,.14,'sine',.22);});},
+  n9:function(g){[N.C5,N.E5,N.G5,N.C5*2,N.G5,N.E5,N.D5,N.C5,N.B4].forEach(function(f,i){tone(g,f,i*.1,.13,'sine',.22);});},
+  n10:function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'square',.28);});tone(g,N.C5*2,0.62,.4,'sine',.25);},
+  f_friend: function(g){[N.C5,N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  f_miss:   function(g){[N.G4,N.E4,N.C4,N.E4,N.G4].forEach(function(f,i){tone(g,f,i*.3,.4,'sine',.22);});},
+  f_together:function(g){[N.C5,N.E5,N.G5,N.C5*2,N.G5].forEach(function(f,i){tone(g,f,i*.16,.2,'sine',.26);});},
+  f_teacher:function(g){[N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.2,.22,'sine',.24);});},
+  // 學校
+  s_school: function(g){[N.C5,N.D5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  s_class:  function(g){[N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.22,'triangle',.24);});},
+  s_play:   function(g){[N.C5,N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.14,.15,'square',.22);});},
+  s_sport:  function(g){[N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.14,.13,'square',.22);});for(var i=0;i<3;i++)drum(g,i*.22,true);},
+  s_art:    function(g){[N.C5,N.E5,N.G5,N.B4,N.C5*2].forEach(function(f,i){tone(g,f,i*.2,.22,'sine',.24);});},
+  s_sing:   function(g){[N.C5,N.D5,N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  s_trip:   function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.26);});for(var i=0;i<3;i++)drum(g,i*.2,true);},
+  s_holiday:function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.13,.18,'square',.26);});for(var i=0;i<4;i++)drum(g,i*.18,true);},
+  // 食物
+  fd_yummy: function(g){[N.E5,N.G5,N.A5,N.G5,N.E5,N.C5*2].forEach(function(f,i){tone(g,f,i*.14,.16,'sine',.26);});},
+  fd_notgood:function(g){[N.E5,N.D5,N.C5,N.B4].forEach(function(f,i){tone(g,f,i*.18,.25,'sawtooth',.2);});},
+  fd_noodle:function(g){[N.G4,N.A4,N.B4,N.C5,N.D5].forEach(function(f,i){tone(g,f,i*.16,.2,'triangle',.24);});},
+  fd_rice:  function(g){[N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.22,'sine',.24);});},
+  fd_snack: function(g){[N.C5,N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.13,.14,'square',.22);});},
+  fd_fruit: function(g){[N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.16,.2,'sine',.24);});},
+  fd_drink: function(g){[N.C5,N.G5,N.E5,N.C5*2].forEach(function(f,i){tone(g,f,i*.18,.18,'sine',.24);});},
+  fd_full:  function(g){[N.G4,N.A4,N.G4].forEach(function(f,i){tone(g,f,i*.3,.35,'sine',.22);});},
+  // 水果
+  fr_apple:   function(g){[N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  fr_banana:  function(g){[N.D5,N.F5,N.A5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  fr_grape:   function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.18,'sine',.24);});},
+  fr_water:   function(g){[N.G5,N.E5,N.C5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  fr_orange:  function(g){[N.E5,N.G5,N.B4,N.E5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  fr_straw:   function(g){[N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  fr_mango:   function(g){[N.A5,N.G5,N.E5,N.D5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.26);});},
+  fr_peach:   function(g){[N.C5,N.E5,N.G5,N.E5,N.C5].forEach(function(f,i){tone(g,f,i*.18,.22,'sine',.24);});},
+  // 點心
+  sw_cookie:  function(g){[N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.16,.18,'square',.22);});},
+  sw_cake:    function(g){[N.C5,N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.15,.18,'sine',.26);});},
+  sw_candy:   function(g){[N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.13,.14,'sine',.26);});},
+  sw_choco:   function(g){[N.D5,N.F5,N.A5,N.D5*2].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.24);});},
+  sw_ice:     function(g){[N.G5,N.E5,N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.22,'sine',.24);});},
+  sw_pudding: function(g){[N.C5,N.D5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.22,'triangle',.24);});},
+  sw_bread:   function(g){[N.E5,N.G5,N.B4,N.E5*2].forEach(function(f,i){tone(g,f,i*.16,.2,'sine',.24);});},
+  sw_jelly:   function(g){[N.G5,N.A5,N.G5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.15,.16,'sine',.24);});},
+  // 身體
+  b_fine:   function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.28);});},
+  b_headache:function(g){[N.A4,N.Ab4,N.G4].forEach(function(f,i){tone(g,f,i*.2,.28,'sawtooth',.2);});},
+  b_stomach:function(g){[N.G4,N.F4,N.Eb5/2].forEach(function(f,i){tone(g,Math.max(f,100),i*.3,.4,'sine',.2);});},
+  b_leg:    function(g){[N.G4,N.E4,N.D4,N.C4].forEach(function(f,i){tone(g,f,i*.28,.35,'triangle',.2);});},
+  b_sleepy: function(g){[N.G4,N.E4,N.C4].forEach(function(f,i){tone(g,f,i*.45,.55,'sine',.2);});},
+  b_energy: function(g){[N.C5,N.E5,N.G5,N.A5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.13,.14,'square',.24);});},
+  b_hot:    function(g){[N.A5,N.G5,N.F5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.2,'sawtooth',.2);});},
+  b_better: function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.18,.22,'sine',.26);});},
+  // 今天的活動
+  act_clean:  function(g){[N.C5,N.D5,N.E5,N.D5,N.C5].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.24);});},
+  act_church: function(g){[N.C4,N.E4,N.G4,N.C5,N.G4,N.E4,N.C5].forEach(function(f,i){tone(g,f,i*.22,.28,'sine',.26);});},
+  act_class:  function(g){[N.C5,N.D5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.24);});},
+  act_walk:   function(g){[N.C5,N.D5,N.E5,N.D5,N.C5].forEach(function(f,i){tone(g,f,i*.2,.2,'sine',.24);});},
+  act_shop:   function(g){[N.G4,N.A4,N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  act_board:  function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.18,'square',.24);});for(var i=0;i<3;i++)drum(g,i*.22,true);},
+  act_sing:   function(g){[N.C5,N.D5,N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  act_video:  function(g){[N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.24);});},
+  act_eat:    function(g){[N.G4,N.A4,N.B4,N.C5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.2,'triangle',.26);});},
+  // 職業
+  j_doctor: function(g){[N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.18,.22,'sine',.26);});},
+  j_nurse:  function(g){[N.E5,N.G5,N.A5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.24);});},
+  j_teacher:function(g){[N.C5,N.D5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.18,.2,'triangle',.24);});},
+  j_police: function(g){[N.C5,N.G5,N.C5,N.G5].forEach(function(f,i){tone(g,f,i*.2,.18,'square',.24);});},
+  j_fire:   function(g){[N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.15,.15,'square',.24);});for(var i=0;i<3;i++)drum(g,i*.2,true);},
+  j_chef:   function(g){[N.G4,N.A4,N.B4,N.C5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.2,'triangle',.24);});},
+  j_engineer:function(g){[N.C5,N.E5,N.G5,N.B4,N.C5*2].forEach(function(f,i){tone(g,f,i*.18,.2,'sine',.24);});},
+  j_singer: function(g){[N.C5,N.D5,N.E5,N.G5,N.A5,N.G5,N.E5].forEach(function(f,i){tone(g,f,i*.16,.18,'sine',.26);});},
+  j_athlete:function(g){[N.C5,N.E5,N.G5,N.A5].forEach(function(f,i){tone(g,f,i*.13,.14,'square',.24);});for(var i=0;i<3;i++)drum(g,i*.2,i%2===0);},
+  j_pilot:  function(g){[N.C5,N.E5,N.G5,N.C5*2,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.18,'sine',.24);});},
+  j_driver: function(g){[N.G4,N.A4,N.C5,N.E5].forEach(function(f,i){tone(g,f,i*.2,.22,'triangle',.24);});},
+  j_farmer: function(g){[N.C4,N.E4,N.G4,N.C5,N.E5].forEach(function(f,i){tone(g,f,i*.22,.25,'sine',.24);});}
+};
+
+
+
+// ── Main card tap: show fullscreen + TTS + SFX ──
+function say(card, key, emoji, text, sub) {
+  // Highlight card
+  document.querySelectorAll('.card.lit').forEach(function(c){c.classList.remove('lit');});
+  if (card) card.classList.add('lit');
+  // Play SFX
+  var g = mkG();
+  if (SFX[key]) SFX[key](g);
+  // Show fullscreen
+  showFS(emoji, text, sub || '');
+  // TTS
+  speak(text);
+}
+
+function showFS(emoji, text, sub) {
+  document.getElementById('fs-emoji').textContent = emoji;
+  document.getElementById('fs-text').textContent  = text;
+  document.getElementById('fs-sub').textContent   = sub || '';
+  // Restart animations
+  var et = document.getElementById('fs-emoji');
+  var tt = document.getElementById('fs-text');
+  et.style.animation='none'; tt.style.animation='none';
+  void et.offsetWidth; void tt.offsetWidth;
+  et.style.animation=''; tt.style.animation='';
+  document.getElementById('fs').classList.add('on');
+}
+
+function closeFS() {
+  document.getElementById('fs').classList.remove('on');
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+// ── YouTube ──
+function openYT(card, vid, em, title, artist) {
+  document.querySelectorAll('.card.lit').forEach(function(c){c.classList.remove('lit');});
+  if (card) card.classList.add('lit');
+  var g = mkG();
+  [N.C5,N.E5,N.G5].forEach(function(f,i){tone(g,f,i*.12,.18,'sine',.26);});
+  window.open('https://www.youtube.com/watch?v='+vid,'_blank');
+}
+
+// ── YES / NO ──
+function ansYN(ans) {
+  var q = document.getElementById('qinput').value || '你喜歡嗎？';
+  var fb = document.getElementById('fbt');
+  var g = mkG();
+  if (ans === 'yes') {
+    [N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.2,'sine',.34);});
+    document.getElementById('yndsp').innerHTML='<span style="color:var(--yes)">⭕ 對！</span><br><small style="opacity:.65">'+q+'</small>';
+    fb.textContent='⭕'; fb.className='fbt fyes';
+    showFS('⭕','對！',q);
+    speak('對');
+    confetti();
+  } else {
+    [N.A4,N.Ab4,N.G4,N.Gb4].forEach(function(f,i){tone(g,f,i*.15,.22,'sawtooth',.19);});
+    document.getElementById('yndsp').innerHTML='<span style="color:var(--no)">❌ 不對</span><br><small style="opacity:.65">'+q+'</small>';
+    fb.textContent='❌'; fb.className='fbt fno';
+    showFS('❌','不對',q);
+    speak('不對');
+  }
+  fb.classList.remove('on'); void fb.offsetWidth; fb.classList.add('on');
+  setTimeout(function(){fb.classList.remove('on');},1200);
+}
+
+function confetti() {
+  var cols=['#ff6b9d','#c77dff','#ffd166','#06d6a0','#fff'];
+  for(var i=0;i<28;i++){
+    var c=document.createElement('div');c.className='cf';
+    c.style.cssText='left:'+Math.random()*100+'vw;top:'+(5+Math.random()*20)+'vh;background:'+cols[Math.floor(Math.random()*cols.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation-duration:'+(1+Math.random()*.6)+'s;animation-delay:'+(Math.random()*.3)+'s';
+    document.body.appendChild(c);
+    setTimeout((function(el){return function(){el.remove();};})(c),2200);
+  }
+}
+
+function swTab(btn, id) {
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  if (id==='battle') { loadBattleHunks(); renderBattleRoster(); }
+  if (id==='qa-sec') {
+    loadUserName();
+    qa2Load();
+    qa2Mode = 'seq';
+    document.getElementById('qa2-mode-seq').classList.add('on');
+    document.getElementById('qa2-mode-jump').classList.remove('on');
+    document.getElementById('qa2-seq').style.display  = 'block';
+    document.getElementById('qa2-list').style.display = 'none';
+    updateGreeting();
+    if (userName) showWelcomePopup();
+    qa2Render();
+  }
+}
+
+// ── Admin sub-tab switcher ──
+function swAdminTab(btn, id) {
+  document.querySelectorAll('.admin-tab').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.admin-sec').forEach(function(s){s.classList.remove('on');});
+  btn.classList.add('on');
+  document.getElementById(id).classList.add('on');
+  if (id==='admin-daily-manage') renderAdminLists();
+  if (id==='admin-custom-cards') { renderAdminCustomList(); }
+  if (id==='admin-music-manage') renderAdminMusicList();
+}
+
+// ── Custom Cards (daily) ──
+var customCards = [];
+function loadCustomCards(){ try{ customCards=JSON.parse(localStorage.getItem('aac_custom_cards')||'[]'); }catch(e){ customCards=[]; } }
+function saveCustomCards(){ try{ localStorage.setItem('aac_custom_cards', JSON.stringify(customCards)); }catch(e){} }
+
+function addCustomCard() {
+  var em    = document.getElementById('new-card-emoji').value.trim() || '😊';
+  var label = document.getElementById('new-card-label').value.trim();
+  var speak_text = document.getElementById('new-card-speak').value.trim() || label;
+  var cat   = document.getElementById('new-card-cat').value;
+  if (!label) { alert('請輸入顯示文字！'); return; }
+  customCards.push({ emoji:em, label:label, speak:speak_text, cat:cat });
+  saveCustomCards();
+  document.getElementById('new-card-emoji').value = '';
+  document.getElementById('new-card-label').value = '';
+  document.getElementById('new-card-speak').value = '';
+  renderCustomCards();
+  renderAdminCustomList();
+}
+
+function renderCustomCards() {
+  loadCustomCards();
+  var grid = document.getElementById('custom-cards-grid');
+  var sec  = document.getElementById('custom-cards-sec');
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (!customCards.length) { sec.style.display='none'; return; }
+  sec.style.display = 'block';
+  customCards.forEach(function(c, idx) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<span class="ce">'+c.emoji+'</span><div class="cl">'+c.label+'</div>';
+    card.onclick = function() {
+      document.querySelectorAll('.card.lit').forEach(function(x){x.classList.remove('lit');});
+      card.classList.add('lit');
+      showFS(c.emoji, c.label, '');
+      speak(c.speak || c.label);
+      addRecord(c.emoji, c.label, c.cat || 'talk');
+    };
+    grid.appendChild(card);
+  });
+}
+
+function renderAdminCustomList() {
+  var list = document.getElementById('custom-card-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!customCards.length) { list.innerHTML='<div style="color:rgba(240,230,255,.35);font-size:.85rem;padding:10px 0">還沒有自訂字卡</div>'; return; }
+  customCards.forEach(function(c, idx) {
+    var item = document.createElement('div');
+    item.className = 'admin-card-item';
+    item.innerHTML = '<div class="admin-card-em">'+c.emoji+'</div><div class="admin-card-info"><div class="admin-card-name">'+c.label+'</div><div class="admin-card-sub">語音：'+c.speak+'</div></div>';
+    var del = document.createElement('button');
+    del.className = 'admin-del-btn'; del.textContent = '✕';
+    del.onclick = (function(i){ return function(){ customCards.splice(i,1); saveCustomCards(); renderCustomCards(); renderAdminCustomList(); }; })(idx);
+    item.appendChild(del);
+    list.appendChild(item);
+  });
+}
+
+// ── Custom Music ──
+var customMusic = [];
+function loadCustomMusic(){ try{ customMusic=JSON.parse(localStorage.getItem('aac_custom_music')||'[]'); }catch(e){ customMusic=[]; } }
+function saveCustomMusic(){ try{ localStorage.setItem('aac_custom_music', JSON.stringify(customMusic)); }catch(e){} }
+
+function addCustomMusic() {
+  var em     = document.getElementById('new-music-emoji').value.trim() || '🎵';
+  var title  = document.getElementById('new-music-title').value.trim();
+  var artist = document.getElementById('new-music-artist').value.trim();
+  var url    = document.getElementById('new-music-url').value.trim();
+  if (!title || !url) { alert('請輸入歌曲名稱和網址！'); return; }
+  // Extract video ID from URL if full URL given
+  var vid = url;
+  var m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+  if (m) vid = m[1];
+  customMusic.push({ emoji:em, title:title, artist:artist, vid:vid });
+  saveCustomMusic();
+  document.getElementById('new-music-emoji').value='';
+  document.getElementById('new-music-title').value='';
+  document.getElementById('new-music-artist').value='';
+  document.getElementById('new-music-url').value='';
+  renderCustomMusic();
+  renderAdminMusicList();
+}
+
+function renderCustomMusic() {
+  loadCustomMusic();
+  var grid = document.getElementById('custom-music-grid');
+  var sec  = document.getElementById('custom-music-sec');
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (!customMusic.length) { sec.style.display='none'; return; }
+  sec.style.display = 'block';
+  customMusic.forEach(function(m, idx) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.style.position = 'relative';
+    card.innerHTML = '<span class="yt-badge">▶ YT</span><span class="ce">'+m.emoji+'</span><div class="cl">'+m.title+'</div><div class="cs">'+m.artist+'</div>';
+    card.onclick = function() { openYT(card, m.vid, m.emoji, m.title, m.artist); };
+    grid.appendChild(card);
+  });
+}
+
+function renderAdminMusicList() {
+  var list = document.getElementById('custom-music-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!customMusic.length) { list.innerHTML='<div style="color:rgba(240,230,255,.35);font-size:.85rem;padding:10px 0">還沒有自訂音樂</div>'; return; }
+  customMusic.forEach(function(m, idx) {
+    var item = document.createElement('div');
+    item.className = 'admin-card-item';
+    item.innerHTML = '<div class="admin-card-em">'+m.emoji+'</div><div class="admin-card-info"><div class="admin-card-name">'+m.title+'</div><div class="admin-card-sub">'+m.artist+' ｜ ID: '+m.vid+'</div></div>';
+    var del = document.createElement('button');
+    del.className = 'admin-del-btn'; del.textContent = '✕';
+    del.onclick = (function(i){ return function(){ customMusic.splice(i,1); saveCustomMusic(); renderCustomMusic(); renderAdminMusicList(); }; })(idx);
+    item.appendChild(del);
+    list.appendChild(item);
+  });
+}
+
+// ── Admin: daily card lists ──
+var ADMIN_DAILY_COMM = [
+  {emoji:'🙏',label:'謝謝你'},{emoji:'❓',label:'我不懂'},{emoji:'🙋',label:'我想幫忙'}
+];
+var ADMIN_DAILY_FEEL = [
+  {emoji:'😄',label:'我很開心'},{emoji:'😢',label:'我不開心'},{emoji:'😨',label:'我害怕'},
+  {emoji:'😴',label:'我很累'},{emoji:'😖',label:'我不舒服'},{emoji:'🤩',label:'好興奮！'}
+];
+var ADMIN_DAILY_NEED = [
+  {emoji:'💧',label:'想喝水'},{emoji:'🍱',label:'想吃東西'},{emoji:'🚽',label:'要上廁所'},
+  {emoji:'🏠',label:'想回家'},{emoji:'🛏️',label:'想睡覺'},{emoji:'🌳',label:'想出去'},
+  {emoji:'🎵',label:'想聽音樂'},{emoji:'🤗',label:'想抱抱'},{emoji:'💬',label:'想聊天'},{emoji:'🖐️',label:'想牽手'}
+];
+var ADMIN_DAILY_ACT = [
+  {emoji:'🧹',label:'打掃'},{emoji:'⛪',label:'禮拜'},{emoji:'📚',label:'上課'},
+  {emoji:'🚶',label:'散步'},{emoji:'🛒',label:'買東西'},{emoji:'🎲',label:'玩桌遊'},
+  {emoji:'🎤',label:'唱歌'},{emoji:'🎬',label:'看影片'},{emoji:'🍽️',label:'吃東西'}
+];
+var ADMIN_DAILY_FOOD = [
+  {emoji:'😋',label:'好好吃'},{emoji:'🤢',label:'不好吃'},{emoji:'🍜',label:'想吃麵'},
+  {emoji:'🍚',label:'想吃飯'},{emoji:'🧋',label:'想喝飲料'},{emoji:'🫃',label:'我吃飽了'}
+];
+var ADMIN_DAILY_BODY = [
+  {emoji:'💪',label:'我很好'},{emoji:'🤕',label:'頭很痛'},{emoji:'🤢',label:'肚子不舒服'},
+  {emoji:'🦵',label:'腳很痠'},{emoji:'😪',label:'我很想睡'},{emoji:'⚡',label:'很有精神'},
+  {emoji:'🌡️',label:'我發燒了'},{emoji:'😌',label:'我好多了'}
+];
+var hiddenCards = {};
+function loadHiddenCards(){ try{ hiddenCards=JSON.parse(localStorage.getItem('aac_hidden')||'{}'); }catch(e){ hiddenCards={}; } }
+function saveHiddenCards(){ try{ localStorage.setItem('aac_hidden', JSON.stringify(hiddenCards)); }catch(e){} }
+
+function renderAdminLists() {
+  loadHiddenCards();
+  renderAdminList('admin-list-comm', ADMIN_DAILY_COMM);
+  renderAdminList('admin-list-feel', ADMIN_DAILY_FEEL);
+  renderAdminList('admin-list-need', ADMIN_DAILY_NEED);
+  renderAdminList('admin-list-act',  ADMIN_DAILY_ACT);
+  renderAdminList('admin-list-food', ADMIN_DAILY_FOOD);
+  renderAdminList('admin-list-body', ADMIN_DAILY_BODY);
+}
+
+function renderAdminList(listId, items) {
+  var list = document.getElementById(listId);
+  if (!list) return;
+  list.innerHTML = '';
+  items.forEach(function(item) {
+    var key = item.emoji+item.label;
+    var hidden = hiddenCards[key];
+    var el = document.createElement('div');
+    el.className = 'admin-card-item';
+    el.style.opacity = hidden ? '0.35' : '1';
+    el.innerHTML = '<div class="admin-card-em">'+item.emoji+'</div><div class="admin-card-info"><div class="admin-card-name">'+item.label+'</div></div>';
+    var btn = document.createElement('button');
+    btn.className = 'admin-del-btn';
+    btn.textContent = hidden ? '⬆' : '✕';
+    btn.title = hidden ? '恢復顯示' : '隱藏字卡';
+    btn.style.background = hidden ? 'rgba(6,214,160,.15)' : '';
+    btn.style.borderColor = hidden ? 'rgba(6,214,160,.3)' : '';
+    btn.style.color = hidden ? 'var(--yes)' : '';
+    btn.onclick = (function(k, h){ return function(){
+      if (h) delete hiddenCards[k]; else hiddenCards[k]=true;
+      saveHiddenCards();
+      renderAdminLists();
+    }; })(key, hidden);
+    el.appendChild(btn);
+    list.appendChild(el);
+  });
+}
+
+// Init
+loadCustomCards(); loadCustomMusic(); loadHiddenCards();
+setTimeout(function(){ renderCustomCards(); renderCustomMusic(); }, 200);
+
+
+// ── Settings Panel (unified) ──
+var soundMode = 'full'; // 'full' | 'sfx' | 'tts' | 'silent'
+try { soundMode = localStorage.getItem('aac_soundmode') || 'full'; } catch(e){}
+
+function openSettings() {
+  loadDB(); renderRec();
+  renderCustomCards(); renderCustomMusic();
+  renderAdminCustomList(); renderAdminMusicList();
+  updateSoundModeUI();
+  document.getElementById('settings-panel').classList.add('open');
+  document.getElementById('settings-overlay').classList.add('show');
+}
+function closeSettings() {
+  document.getElementById('settings-panel').classList.remove('open');
+  document.getElementById('settings-overlay').classList.remove('show');
+}
+function swSettings(btn, id) {
+  document.querySelectorAll('.s-navbtn').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.s-sec').forEach(function(s){s.classList.remove('on');});
+  btn.classList.add('on');
+  document.getElementById('settings-'+id).classList.add('on');
+  if (id==='rec-sec') { loadDB(); renderRec(); }
+  if (id==='cards-sec') { renderAdminLists(); renderAdminCustomList(); renderAdminMusicList(); }
+}
+
+// ── Sound mode ──
+function setSoundMode(mode) {
+  soundMode = mode;
+  try { localStorage.setItem('aac_soundmode', mode); } catch(e){}
+  updateSoundModeUI();
+}
+function updateSoundModeUI() {
+  ['full','sfx','tts','silent'].forEach(function(m){
+    var btn = document.getElementById('mode-'+m);
+    if (btn) btn.classList.toggle('on', soundMode===m);
+  });
+}
+// Wrap speak so sound mode is respected
+var _origSpeak = speak;
+speak = function(text) {
+  if (soundMode==='silent' || soundMode==='sfx') return;
+  _origSpeak(text);
+};
+// Wrap mkG so SFX mode is respected
+var _origMkG = mkG;
+mkG = function() {
+  if (soundMode==='silent' || soundMode==='tts') {
+    // Return a dummy gain that connects to nothing
+    var ac = getAC();
+    var g = ac.createGain(); g.gain.value = 0; g.connect(ac.destination); return g;
+  }
+  return _origMkG();
+};
+updateSoundModeUI();
+
+
+
+// ── Editable Title ──
+function startTitleEdit() {
+  var titleEl = document.getElementById('site-title');
+  var wrap = document.getElementById('title-edit-wrap');
+  var input = document.getElementById('title-input');
+  input.value = titleEl.textContent;
+  titleEl.style.display = 'none';
+  wrap.style.display = 'block';
+  input.focus();
+  input.select();
+}
+function saveTitleEdit() {
+  var input = document.getElementById('title-input');
+  var val = input.value.trim() || '🎵 我的音樂世界 🎵';
+  var titleEl = document.getElementById('site-title');
+  titleEl.textContent = val;
+  try { localStorage.setItem('aac_title', val); } catch(e){}
+  titleEl.style.display = '';
+  document.getElementById('title-edit-wrap').style.display = 'none';
+}
+function cancelTitleEdit() {
+  document.getElementById('site-title').style.display = '';
+  document.getElementById('title-edit-wrap').style.display = 'none';
+}
+// Load saved title
+(function(){
+  try {
+    var t = localStorage.getItem('aac_title');
+    if (t) document.getElementById('site-title').textContent = t;
+  } catch(e){}
+})();
+// Enter key confirms title
+document.addEventListener('keydown', function(e) {
+  if (e.key==='Enter' && document.getElementById('title-edit-wrap').style.display!=='none') saveTitleEdit();
+});
+
+
+var userName = '';
+
+function loadUserName() {
+  try { userName = localStorage.getItem('aac_username') || ''; } catch(e){ userName=''; }
+}
+
+function saveUserName(name) {
+  userName = name;
+  try { localStorage.setItem('aac_username', name); } catch(e){}
+}
+
+function showNameModal() {
+  var modal = document.getElementById('name-modal');
+  var input = document.getElementById('name-input');
+  if (modal) { modal.classList.add('show'); if(input) { input.value = userName; input.focus(); } }
+}
+
+function showWelcomePopup() {
+  var now = new Date();
+  var h = now.getHours();
+  var greeting = h < 12 ? '早安' : h < 17 ? '午安' : '晚安';
+  var emojis = ['🌟','☀️','🌈','💫','🎵','😊'];
+  var em = emojis[Math.floor(Math.random()*emojis.length)];
+  var msg = greeting + '，<span style="color:var(--a1);font-size:1.5rem">' + userName + '</span>！<br>今天來回答問題吧 😊';
+  document.getElementById('welcome-emoji').textContent = em;
+  document.getElementById('welcome-msg').innerHTML = msg;
+  document.getElementById('welcome-popup').classList.add('show');
+  setTimeout(function(){ speak(greeting + '，' + userName + '，今天來回答問題吧！'); }, 300);
+}
+
+function closeWelcome() {
+  document.getElementById('welcome-popup').classList.remove('show');
+}
+
+function confirmName() {
+  var input = document.getElementById('name-input');
+  var name = (input ? input.value.trim() : '') || '你';
+  saveUserName(name);
+  document.getElementById('name-modal').classList.remove('show');
+  updateGreeting();
+  // After confirming name, show welcome popup
+  setTimeout(function(){ showWelcomePopup(); }, 200);
+}
+
+// ── Startup: show name modal if no name saved ──
+document.addEventListener('DOMContentLoaded', function() {
+  loadUserName();
+  if (!userName) {
+    setTimeout(showNameModal, 500);
+  }
+});
+
+
+
+function updateGreeting() {
+  var bar = document.getElementById('qa2-greeting');
+  var txt = document.getElementById('qa2-greeting-text');
+  if (!bar || !txt) return;
+  if (userName) {
+    var now = new Date();
+    var h = now.getHours();
+    var greeting = h < 12 ? '早安' : h < 17 ? '午安' : '晚安';
+    txt.innerHTML = greeting + '，<span style="color:var(--a1)">' + userName + '</span> 😊 今天來回答問題吧！';
+    bar.classList.remove('hidden');
+    // Add change name button if not already there
+    if (!document.getElementById('qa2-change-name')) {
+      var btn = document.createElement('button');
+      btn.id = 'qa2-change-name';
+      btn.textContent = '✏️ 改名字';
+      btn.onclick = showNameModal;
+      bar.appendChild(btn);
+    }
+  } else {
+    bar.classList.add('hidden');
+  }
+}
+
+// Enter key confirms name
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('name-modal').classList.contains('show')) {
+    confirmName();
+  }
+});
+
+
+var QA2_BANK = [
+  // 😊 心情感受
+  { cat:'😊 心情感受', q:'今天心情怎麼樣？',
+    choices:[{e:'😄',t:'很開心'},{e:'🙂',t:'還不錯'},{e:'😔',t:'有點悶'},{e:'😢',t:'不開心'}] },
+  { cat:'😊 心情感受', q:'今天有沒有開心的事？',
+    choices:[{e:'👍',t:'有！'},{e:'👎',t:'沒有'},{e:'🎵',t:'聽到好歌'},{e:'🤗',t:'有人陪我'}] },
+  { cat:'😊 心情感受', q:'今天有沒有難過或生氣？',
+    choices:[{e:'😊',t:'都還好'},{e:'😢',t:'有點難過'},{e:'😤',t:'有點生氣'},{e:'😨',t:'被嚇到了'}] },
+
+  // 💭 情緒細分
+  { cat:'💭 情緒細分', q:'如果心情不好，是因為什麼？',
+    choices:[{e:'😥',t:'想家想親人'},{e:'🤕',t:'身體不舒服'},{e:'😑',t:'太無聊了'},{e:'😊',t:'我還好'}] },
+  { cat:'💭 情緒細分', q:'現在最想要什麼感覺？',
+    choices:[{e:'🤗',t:'被抱抱'},{e:'🤫',t:'安靜一下'},{e:'🎵',t:'聽音樂'},{e:'😴',t:'好好睡覺'}] },
+
+  // 💪 身體狀況
+  { cat:'💪 身體狀況', q:'今天身體感覺如何？',
+    choices:[{e:'💪',t:'很好'},{e:'🙂',t:'還可以'},{e:'😴',t:'很累'},{e:'🤢',t:'很不舒服'}] },
+  { cat:'💪 身體狀況', q:'哪裡不舒服？',
+    choices:[{e:'🧠',t:'頭痛'},{e:'🫃',t:'肚子不舒服'},{e:'🦵',t:'手腳很痠'},{e:'😊',t:'沒有'}] },
+
+  // 🩺 疼痛評估
+  { cat:'🩺 疼痛評估', q:'疼痛程度大概是？',
+    choices:[{e:'😊',t:'不痛'},{e:'😐',t:'有點痛'},{e:'😣',t:'蠻痛的'},{e:'😭',t:'非常痛'}] },
+  { cat:'🩺 疼痛評估', q:'疼痛在哪裡？',
+    choices:[{e:'🧠',t:'頭部'},{e:'🫁',t:'胸口或背部'},{e:'🫃',t:'肚子'},{e:'🦵',t:'手或腳'}] },
+  { cat:'🩺 疼痛評估', q:'比起昨天，疼痛有沒有變化？',
+    choices:[{e:'📈',t:'更痛了'},{e:'📊',t:'差不多'},{e:'📉',t:'好一點了'},{e:'✅',t:'不痛了'}] },
+
+  // 👥 社交互動
+  { cat:'👥 社交互動', q:'今天有誰來看你？',
+    choices:[{e:'👩',t:'媽媽'},{e:'👨',t:'爸爸'},{e:'🧑',t:'朋友或其他家人'},{e:'❌',t:'沒有人來'}] },
+  { cat:'👥 社交互動', q:'今天跟人說話了嗎？',
+    choices:[{e:'😄',t:'有，很開心'},{e:'🙂',t:'說了一點'},{e:'🤐',t:'沒有說話'},{e:'😣',t:'不想說話'}] },
+  { cat:'👥 社交互動', q:'今天有沒有見到喜歡的人？',
+    choices:[{e:'😍',t:'有！超開心'},{e:'🤩',t:'看到帥哥'},{e:'👩',t:'見到媽媽'},{e:'👎',t:'沒有'}] },
+
+  // 🏃 活動參與
+  { cat:'🏃 活動參與', q:'今天做了什麼活動？',
+    choices:[{e:'🎵',t:'聽音樂'},{e:'📺',t:'看電視'},{e:'🚶',t:'去散步'},{e:'💤',t:'休息睡覺'}] },
+  { cat:'🏃 活動參與', q:'今天有沒有做運動或伸展？',
+    choices:[{e:'💪',t:'有運動'},{e:'🧘',t:'做伸展'},{e:'🚶',t:'走了一下'},{e:'❌',t:'沒有'}] },
+  { cat:'🏃 活動參與', q:'今天最喜歡做什麼？',
+    choices:[{e:'🎵',t:'聽音樂'},{e:'🤗',t:'讓人陪'},{e:'🚶',t:'出去走走'},{e:'😴',t:'睡覺休息'}] },
+
+  // 🌡️ 環境感受
+  { cat:'🌡️ 環境感受', q:'現在環境舒不舒服？',
+    choices:[{e:'😊',t:'很舒服'},{e:'🥵',t:'太熱'},{e:'🥶',t:'太冷'},{e:'🔊',t:'太吵'}] },
+  { cat:'🌡️ 環境感受', q:'想調整什麼？',
+    choices:[{e:'❄️',t:'開冷氣涼一點'},{e:'🌡️',t:'調暖一點'},{e:'🔇',t:'安靜一點'},{e:'😊',t:'不用調整'}] },
+
+  // 🎮 娛樂喜好
+  { cat:'🎮 娛樂喜好', q:'今天想聽什麼音樂？',
+    choices:[{e:'💃',t:'動感舞曲'},{e:'🌸',t:'輕柔抒情'},{e:'🎹',t:'輕音樂'},{e:'❌',t:'不想聽'}] },
+  { cat:'🎮 娛樂喜好', q:'今天想看什麼節目？',
+    choices:[{e:'📺',t:'電視劇'},{e:'🤣',t:'搞笑節目'},{e:'🎵',t:'音樂節目'},{e:'❌',t:'不想看'}] },
+  { cat:'🎮 娛樂喜好', q:'今天最開心的是什麼？',
+    choices:[{e:'🎵',t:'聽到好音樂'},{e:'🤗',t:'有人陪我'},{e:'😍',t:'帥哥出現'},{e:'😋',t:'吃到好料'}] },
+];
+
+var qa2Mode = 'seq'; // 'seq' or 'jump'
+
+function qa2SetMode(mode) {
+  qa2Mode = mode;
+  document.getElementById('qa2-mode-seq').classList.toggle('on', mode==='seq');
+  document.getElementById('qa2-mode-jump').classList.toggle('on', mode==='jump');
+  document.getElementById('qa2-seq').style.display  = mode==='seq'  ? 'block' : 'none';
+  document.getElementById('qa2-list').style.display = mode==='jump' ? 'block' : 'none';
+  if (mode==='jump') qa2RenderList();
+  if (mode==='seq')  qa2Render();
+}
+
+function qa2RenderList() {
+  var inner = document.getElementById('qa2-list-inner');
+  if (!inner) return;
+  var now = new Date();
+  inner.innerHTML = '<div style="text-align:center;font-size:.78rem;color:rgba(240,230,255,.4);margin-bottom:12px;font-weight:700">📅 '+now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate()+' — 點任何一題直接作答</div>';
+
+  var currentCat = '';
+  QA2_BANK.forEach(function(q, i) {
+    if (q.cat !== currentCat) {
+      currentCat = q.cat;
+      var catDiv = document.createElement('div');
+      catDiv.className = 'qa2-list-cat';
+      catDiv.textContent = q.cat;
+      inner.appendChild(catDiv);
+    }
+    var ans = qa2Answers[i];
+    var item = document.createElement('div');
+    item.className = 'qa2-list-item' + (ans ? ' answered' : '');
+    item.innerHTML =
+      '<span class="qli-num">'+(i+1)+'</span>'+
+      '<span class="qli-text">'+q.q+'</span>'+
+      (ans ? '<span class="qli-ans">'+ans.e+' '+ans.t+'</span>' : '<span class="qli-arrow">→</span>');
+    item.onclick = (function(idx){
+      return function() {
+        qa2Idx = idx;
+        qa2SetMode('seq');
+      };
+    })(i);
+    inner.appendChild(item);
+  });
+
+  // Add copy / restart buttons at bottom
+  var btns = document.createElement('div');
+  btns.style.cssText = 'display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap';
+  var answered = Object.keys(qa2Answers).length;
+  btns.innerHTML =
+    '<span style="font-size:.82rem;color:rgba(240,230,255,.45);align-self:center">已完成 '+answered+'/'+QA2_BANK.length+' 題</span>'+
+    (answered>0 ? '<button class="rac-btn grn" onclick="qa2CopyResult()">📋 複製記錄</button>' : '')+
+    '<button class="rac-btn" onclick="qa2Restart()">🔄 重新開始</button>';
+  inner.appendChild(btns);
+}
+
+
+
+function qa2TodayKey() {
+  var d = new Date();
+  return 'qa2_'+d.getFullYear()+'_'+(d.getMonth()+1)+'_'+d.getDate();
+}
+
+function qa2Load() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(qa2TodayKey())||'null');
+    if (saved) { qa2Answers = saved.answers||{}; qa2Idx = saved.idx||0; }
+    else { qa2Answers={}; qa2Idx=0; }
+  } catch(e){ qa2Answers={}; qa2Idx=0; }
+}
+
+function qa2Save() {
+  try { localStorage.setItem(qa2TodayKey(), JSON.stringify({answers:qa2Answers, idx:qa2Idx})); } catch(e){}
+}
+
+function qa2SaveSession() {
+  var now = new Date();
+  var key = now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate()+' '
+            +now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  try {
+    var logs = JSON.parse(localStorage.getItem('aac_qa2logs')||'{}');
+    logs[key] = { answers: JSON.parse(JSON.stringify(qa2Answers)), questions: QA2_BANK.map(function(q){return{cat:q.cat,q:q.q};}) };
+    var keys = Object.keys(logs).sort().reverse();
+    if (keys.length>60){ var t={}; keys.slice(0,60).forEach(function(k){t[k]=logs[k];}); logs=t; }
+    localStorage.setItem('aac_qa2logs', JSON.stringify(logs));
+  } catch(e){}
+}
+
+function qa2Render() {
+  var total = QA2_BANK.length;
+  var done = Object.keys(qa2Answers).length;
+  var now = new Date();
+  document.getElementById('qa2-date-bar').textContent = '📅 '+now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate();
+
+  if (done >= total) { qa2ShowDone(); return; }
+
+  while (qa2Idx < total && qa2Answers[qa2Idx] !== undefined) qa2Idx++;
+  if (qa2Idx >= total) { qa2ShowDone(); return; }
+
+  document.getElementById('qa2-progress-fill').style.width = Math.round(done/total*100)+'%';
+  document.getElementById('qa2-category').textContent = QA2_BANK[qa2Idx].cat;
+  document.getElementById('qa2-qnum').textContent = '第 '+(done+1)+' / '+total+' 題';
+  document.getElementById('qa2-question').textContent = QA2_BANK[qa2Idx].q;
+
+  var grid = document.getElementById('qa2-choices');
+  grid.innerHTML = '';
+  QA2_BANK[qa2Idx].choices.forEach(function(c) {
+    var card = document.createElement('div');
+    card.className = 'card'+(qa2Answers[qa2Idx]&&qa2Answers[qa2Idx].t===c.t?' qa-selected':'');
+    card.innerHTML = '<span class="ce" style="font-size:3.5rem;padding:20px 8px 8px">'+c.e+'</span><div class="cl" style="font-size:1rem;padding-bottom:16px">'+c.t+'</div>';
+    card.onclick = function() {
+      qa2Answers[qa2Idx] = c;
+      qa2Save();
+      speak(c.t);
+      try{ var g=mkG(); if(SFX['like']) SFX['like'](g); }catch(e){}
+      grid.querySelectorAll('.card').forEach(function(cd){cd.classList.remove('qa-selected');});
+      card.classList.add('qa-selected');
+      setTimeout(function(){ qa2Idx++; qa2Render(); }, 650);
+    };
+    grid.appendChild(card);
+  });
+
+  document.getElementById('qa2-done').style.display = 'none';
+  document.getElementById('qa2-nav').style.display = 'flex';
+}
+
+function qa2ShowDone() {
+  document.getElementById('qa2-choices').innerHTML = '';
+  document.getElementById('qa2-nav').style.display = 'none';
+  document.getElementById('qa2-progress-fill').style.width = '100%';
+  document.getElementById('qa2-qnum').textContent = '全部完成！';
+  document.getElementById('qa2-question').textContent = '';
+  document.getElementById('qa2-category').textContent = '';
+  var doneTitle = document.getElementById('qa2-done-title');
+  if (doneTitle) doneTitle.textContent = (userName ? userName + '，' : '') + '今天的問答完成了！';
+  qa2SaveSession();
+  // Build grouped summary
+  var cats = {};
+  QA2_BANK.forEach(function(q,i){
+    if(!cats[q.cat]) cats[q.cat]=[];
+    cats[q.cat].push({q:q.q, ans:qa2Answers[i]});
+  });
+  var html = '';
+  Object.keys(cats).forEach(function(cat){
+    html += '<div class="qa2-cat-header">'+cat+'</div>';
+    cats[cat].forEach(function(item){
+      html += '<div class="sum-row"><span class="sum-q">'+item.q+'</span><span class="sum-a">'+(item.ans?item.ans.e+' '+item.ans.t:'<span style="opacity:.3">—</span>')+'</span></div>';
+    });
+  });
+  document.getElementById('qa2-done-summary').innerHTML = html;
+  document.getElementById('qa2-done').style.display = 'block';
+  try{ var g=mkG(); [523,659,784,1047].forEach(function(f,i){tone(g,f,i*.15,.25,'sine',.28);}); }catch(e){}
+}
+
+function qa2Back() {
+  if(qa2Idx>0){ qa2Idx--; delete qa2Answers[qa2Idx]; qa2Save(); qa2Render(); }
+}
+function qa2Skip() {
+  if(qa2Idx<QA2_BANK.length-1){ qa2Idx++; qa2Render(); }
+}
+function qa2Restart() {
+  qa2Answers={}; qa2Idx=0; qa2Save();
+  if (qa2Mode==='jump') qa2RenderList();
+  else qa2Render();
+}
+function qa2CopyResult() {
+  var lines=['📝 今日問答紀錄\n'];
+  var cats={};
+  QA2_BANK.forEach(function(q,i){ if(!cats[q.cat])cats[q.cat]=[]; cats[q.cat].push({q:q.q,ans:qa2Answers[i]}); });
+  Object.keys(cats).forEach(function(cat){
+    lines.push(cat);
+    cats[cat].forEach(function(item){ lines.push('  '+item.q+' → '+(item.ans?item.ans.e+' '+item.ans.t:'（未回答）')); });
+    lines.push('');
+  });
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(lines.join('\n')).then(function(){
+      var el=document.getElementById('qa2-copied');
+      if(el){el.style.display='block';setTimeout(function(){el.style.display='none';},2500);}
+    });
+  }
+}
+
+
+var QA_QUESTIONS = [
+  { q:'今天心情怎麼樣？', choices:[{e:'😄',t:'很開心'},{e:'🙂',t:'還不錯'},{e:'😔',t:'有點悶'},{e:'😢',t:'不開心'},{e:'😖',t:'不舒服'},{e:'🤩',t:'超興奮'}] },
+  { q:'今天身體狀況如何？', choices:[{e:'💪',t:'很好'},{e:'😊',t:'還可以'},{e:'😴',t:'很累'},{e:'🤕',t:'頭很痛'},{e:'🤢',t:'肚子不舒服'},{e:'🌡️',t:'發燒了'}] },
+  { q:'今天吃了什麼？', choices:[{e:'🍜',t:'麵'},{e:'🍚',t:'飯'},{e:'🍞',t:'麵包'},{e:'🍪',t:'零食'},{e:'🍎',t:'水果'},{e:'🧋',t:'飲料'}] },
+  { q:'今天做了什麼？', choices:[{e:'🏫',t:'去學校'},{e:'🎵',t:'聽音樂'},{e:'📺',t:'看電視'},{e:'🚶',t:'散步'},{e:'🎨',t:'畫畫'},{e:'💤',t:'睡覺'}] },
+  { q:'今天有沒有見到喜歡的人？', choices:[{e:'👍',t:'有！'},{e:'👎',t:'沒有'},{e:'👩',t:'媽媽'},{e:'👨',t:'爸爸'},{e:'🧑',t:'朋友'},{e:'👩‍🏫',t:'老師'}] },
+  { q:'今天喜歡什麼？', choices:[{e:'🎵',t:'音樂'},{e:'🍜',t:'食物'},{e:'📺',t:'電視'},{e:'🌳',t:'外面'},{e:'🤗',t:'抱抱'},{e:'😍',t:'帥哥'}] },
+  { q:'今天有什麼不喜歡的？', choices:[{e:'😣',t:'有'},{e:'😊',t:'都還好'},{e:'🔊',t:'太吵'},{e:'🥵',t:'太熱'},{e:'🥶',t:'太冷'},{e:'😖',t:'身體不舒服'}] },
+  { q:'現在想要什麼？', choices:[{e:'💧',t:'喝水'},{e:'🍱',t:'吃東西'},{e:'🤗',t:'抱抱'},{e:'🎵',t:'音樂'},{e:'🛏️',t:'休息'},{e:'🏠',t:'回家'}] },
+];
+
+var qaAnswers = {};   // { questionIndex: {e, t} }
+var qaIdx = 0;
+var qaDate = '';
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate();
+}
+
+function loadQAState() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('aac_qa')||'{}');
+    if (saved.date === todayStr()) {
+      qaAnswers = saved.answers || {};
+      qaIdx = saved.idx || 0;
+    } else {
+      qaAnswers = {}; qaIdx = 0;
+    }
+  } catch(e){ qaAnswers={}; qaIdx=0; }
+}
+
+function saveQAState() {
+  try {
+    localStorage.setItem('aac_qa', JSON.stringify({date:todayStr(), answers:qaAnswers, idx:qaIdx}));
+  } catch(e){}
+}
+
+function saveSessionLog() {
+  // Save a new session record every time QA is completed (multiple per day allowed)
+  var now = new Date();
+  var dateStr = now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate();
+  var timeStr = now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  var sessionKey = dateStr + ' ' + timeStr;
+  try {
+    var logs = JSON.parse(localStorage.getItem('aac_dailylogs')||'{}');
+    logs[sessionKey] = { answers: JSON.parse(JSON.stringify(qaAnswers)), date: dateStr, time: timeStr };
+    // Keep last 60 sessions
+    var keys = Object.keys(logs).sort().reverse();
+    if (keys.length > 60) { var trim={}; keys.slice(0,60).forEach(function(k){trim[k]=logs[k];}); logs=trim; }
+    localStorage.setItem('aac_dailylogs', JSON.stringify(logs));
+  } catch(e){}
+}
+
+function renderQA() {
+  var today = todayStr();
+  document.getElementById('qa-date-bar').textContent = '📅 ' + today;
+  var total = QA_QUESTIONS.length;
+  var done = Object.keys(qaAnswers).length;
+
+  // Check if all done
+  if (done >= total) { showQADone(); return; }
+
+  // Find current unanswered question
+  while (qaIdx < total && qaAnswers[qaIdx] !== undefined) qaIdx++;
+  if (qaIdx >= total) { showQADone(); return; }
+
+  // Progress
+  document.getElementById('qa-progress-fill').style.width = Math.round(done/total*100)+'%';
+  document.getElementById('qa-qnum').textContent = '第 '+(done+1)+' / '+total+' 題';
+  document.getElementById('qa-question').textContent = QA_QUESTIONS[qaIdx].q;
+
+  // Choices
+  var grid = document.getElementById('qa-choices');
+  grid.innerHTML = '';
+  QA_QUESTIONS[qaIdx].choices.forEach(function(c) {
+    var card = document.createElement('div');
+    card.className = 'card' + (qaAnswers[qaIdx] && qaAnswers[qaIdx].t===c.t ? ' qa-selected' : '');
+    card.innerHTML = '<span class="ce">'+c.e+'</span><div class="cl">'+c.t+'</div>';
+    card.onclick = function() {
+      qaAnswers[qaIdx] = c;
+      saveQAState();
+      speak(c.t);
+      var g = mkG(); if(SFX['like']) SFX['like'](g);
+      // Flash selected
+      grid.querySelectorAll('.card').forEach(function(cd){ cd.classList.remove('qa-selected'); });
+      card.classList.add('qa-selected');
+      setTimeout(function(){ qaIdx++; renderQA(); }, 700);
+    };
+    grid.appendChild(card);
+  });
+
+  document.getElementById('qa-done').style.display = 'none';
+  document.getElementById('qa-nav').style.display = 'flex';
+}
+
+function showQADone() {
+  document.getElementById('qa-choices').innerHTML = '';
+  document.getElementById('qa-nav').style.display = 'none';
+  document.getElementById('qa-progress-fill').style.width = '100%';
+  document.getElementById('qa-qnum').textContent = '全部完成！';
+  document.getElementById('qa-question').textContent = '';
+  // Save this session
+  saveSessionLog();
+  // Build summary
+  var lines = '';
+  QA_QUESTIONS.forEach(function(q, i) {
+    var ans = qaAnswers[i];
+    lines += '<div class="sum-row"><span class="sum-q">'+q.q+'</span><span class="sum-a">'+(ans ? ans.e+' '+ans.t : '—')+'</span></div>';
+  });
+  document.getElementById('qa-done-summary').innerHTML = lines;
+  document.getElementById('qa-done').style.display = 'block';
+  // Play cheer
+  try { var g=mkG(); [523,659,784,1047].forEach(function(f,i){tone(g,f,i*.15,.25,'sine',.3);}); } catch(e){}
+}
+
+function qaBack() {
+  if (qaIdx > 0) { qaIdx--; delete qaAnswers[qaIdx]; saveQAState(); renderQA(); }
+}
+function qaSkip() {
+  if (qaIdx < QA_QUESTIONS.length-1) { qaIdx++; renderQA(); }
+}
+
+function restartQA() {
+  qaAnswers = {}; qaIdx = 0;
+  saveQAState();
+  renderQA();
+}
+
+function swRecTab(btn, id) {
+  document.querySelectorAll('.rec-panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.rtab').forEach(function(b){ b.classList.remove('on'); });
+  document.getElementById('rec-'+id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  if (id==='history') renderRec();
+  if (id==='summary') renderSummary();
+}
+
+// Strip emoji from answer text for narrative
+function stripEmoji(str) {
+  if (!str) return str;
+  return str.replace(/[^\u0000-\u00FF\u2E80-\u9FFF\uF900-\uFAFF\uFE30-\uFE4F]/g, '').trim();
+}
+
+function buildNarrativeSummary(qs, answers) {
+  var name = userName || '她';
+  function ans(i){ return answers[i] ? stripEmoji(answers[i].t) : null; }
+  var sentences = [];
+
+  var mood=ans(0), happyEv=ans(1), sadEv=ans(2), sadReason=ans(3), wantFeel=ans(4);
+  var body=ans(5), hurt=ans(6), pain=ans(7), painWhere=ans(8), painChange=ans(9);
+  var visitor=ans(10), talked=ans(11), liked=ans(12);
+  var activity=ans(13), exercise=ans(14), faveAct=ans(15);
+  var env=ans(16), envAdj=ans(17);
+  var music=ans(18), tv=ans(19), happyThing=ans(20);
+
+  // 心情
+  if (mood) {
+    var s = name + '今天的心情';
+    if (mood.indexOf('開心')!==-1||mood.indexOf('興奮')!==-1) s += '很好，感覺'+mood;
+    else if (mood.indexOf('不開心')!==-1||mood.indexOf('悶')!==-1||mood.indexOf('難過')!==-1) s += '不太好，感覺'+mood;
+    else s += '是'+mood;
+    s += '。';
+    if (happyEv && happyEv.indexOf('沒有')===-1) s += '今天有讓'+name+'開心的事，像是'+happyEv+'，心情因此好了不少。';
+    if (sadEv && sadEv.indexOf('還好')===-1) {
+      s += '不過情緒上也有些'+sadEv;
+      if (sadReason && sadReason.indexOf('還好')===-1) s += '，可能是因為'+sadReason;
+      s += '。';
+    }
+    if (wantFeel) s += '現在'+name+'最希望感受到的是'+wantFeel+'。';
+    sentences.push(s);
+  }
+
+  // 身體
+  if (body) {
+    var s2 = '身體方面，'+name+'今天整體感覺'+body+'。';
+    var hasHurt = hurt && hurt.indexOf('沒有')===-1;
+    var hasPain = pain && pain.indexOf('不痛')===-1;
+    if (hasHurt) s2 += hurt+'有些不舒服';
+    if (hasPain) {
+      s2 += (hasHurt ? '，' : '') + '疼痛程度是'+pain;
+      if (painWhere&&painWhere.indexOf('不痛')===-1) s2 += '，主要在'+painWhere;
+      s2 += '。';
+    } else if (hasHurt) s2 += '。';
+    if (painChange) s2 += '和昨天相比，狀況'+painChange+'。';
+    sentences.push(s2);
+  }
+
+  // 社交
+  if (visitor||talked||liked) {
+    var s3 = '';
+    if (visitor) s3 += visitor.indexOf('沒有')===-1 ? '今天'+visitor+'來看'+name+'，' : '今天沒有人來看'+name+'，';
+    if (talked) {
+      if (talked.indexOf('沒有')!==-1||talked.indexOf('不想')!==-1) s3 += name+'今天不太說話。';
+      else s3 += '有和人說說話，感覺'+talked+'。';
+    }
+    if (liked&&liked.indexOf('沒有')===-1) s3 += '今天很高興見到了'+liked+'，讓'+name+'很開心！';
+    if (s3) sentences.push(s3);
+  }
+
+  // 活動
+  if (activity||exercise||faveAct) {
+    var s4 = '';
+    if (activity) s4 += '今天'+name+'做了'+activity;
+    if (exercise&&exercise.indexOf('沒有')===-1) s4 += (s4?'，也有':'今天'+name+'有')+exercise;
+    if (s4) s4 += '。';
+    if (faveAct) s4 += '其中'+name+'最喜歡的是'+faveAct+'。';
+    if (s4) sentences.push(s4);
+  }
+
+  // 環境
+  if (env) {
+    var s5 = env.indexOf('舒服')!==-1&&env.indexOf('不')===-1
+      ? '環境方面今天感覺很舒適。'
+      : '環境方面，'+name+'覺得'+env+'。';
+    if (envAdj&&envAdj.indexOf('不用')===-1) s5 += '如果能'+envAdj+'的話，'+name+'會更舒服。';
+    sentences.push(s5);
+  }
+
+  // 娛樂
+  var entBits = [];
+  if (music&&music.indexOf('不想')===-1) entBits.push('想聽'+music);
+  if (tv&&tv.indexOf('不想')===-1) entBits.push('想看'+tv);
+  if (entBits.length||happyThing) {
+    var s6 = entBits.length ? '娛樂方面，'+name+entBits.join('，也')+'。' : '';
+    if (happyThing) s6 += '今天讓'+name+'最開心的事是'+happyThing+'。';
+    if (s6) sentences.push(s6);
+  }
+
+  if (!sentences.length) return name+'今天的問答尚未完整填寫，請繼續作答。';
+  return sentences.join('\n\n');
+}
+
+function renderSummary() {
+  try {
+    var logs = JSON.parse(localStorage.getItem('aac_qa2logs')||'{}');
+    var keys = Object.keys(logs).sort().reverse();
+    var el = document.getElementById('summary-content');
+    if (!el) return;
+    if (!keys.length) {
+      el.innerHTML='<div class="rec-empty">還沒有問答記錄<br>先去「每日問答」回答問題吧！</div>';
+      return;
+    }
+    el.innerHTML = '';
+    keys.forEach(function(key) {
+      var log = logs[key];
+      var answered = Object.keys(log.answers).length;
+      var qs = log.questions || QA2_BANK.map(function(q){return{cat:q.cat,q:q.q};});
+      var narrative = buildNarrativeSummary(qs, log.answers);
+
+      var wrap = document.createElement('div');
+      wrap.className = 'sum-day';
+      wrap.style.cssText = 'margin-bottom:12px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;';
+
+      // Header
+      var header = document.createElement('div');
+      header.className = 'sum-day-header';
+      header.innerHTML = '<span>'+key+'</span><span style="font-size:.72rem;opacity:.55">'+answered+'/'+qs.length+' 題</span>';
+
+      // Narrative body
+      var body = document.createElement('div');
+      body.className = 'sum-day-body';
+      body.style.lineHeight = '1.85';
+      body.style.fontSize = '.88rem';
+      // Split by \n\n into paragraph-like spans
+      var paras = narrative.split('\n\n');
+      body.innerHTML = paras.map(function(p){
+        return '<p style="margin-bottom:8px;color:var(--txt)">'+p+'</p>';
+      }).join('');
+
+      wrap.appendChild(header);
+      wrap.appendChild(body);
+
+      // Long-press delete overlay
+      var overlay = document.createElement('div');
+      overlay.className = 'del-overlay';
+      overlay.innerHTML = '<span class="do-icon">🗑️</span><button class="do-yes">刪除這筆</button><button class="do-no">取消</button>';
+      overlay.querySelector('.do-yes').onclick = (function(k, w){
+        return function(e){
+          e.stopPropagation();
+          var logs2 = JSON.parse(localStorage.getItem('aac_qa2logs')||'{}');
+          delete logs2[k]; localStorage.setItem('aac_qa2logs', JSON.stringify(logs2));
+          w.style.transition='opacity .18s'; w.style.opacity='0';
+          setTimeout(renderSummary, 200);
+        };
+      })(key, wrap);
+      overlay.querySelector('.do-no').onclick = function(e){
+        e.stopPropagation(); overlay.classList.remove('show');
+      };
+      wrap.appendChild(overlay);
+      addLongPress(wrap, function(){ overlay.classList.add('show'); });
+      el.appendChild(wrap);
+    });
+  } catch(e){ console.log(e); }
+}
+
+function copySummary() {
+  try {
+    var logs = JSON.parse(localStorage.getItem('aac_qa2logs')||'{}');
+    var keys = Object.keys(logs).sort().reverse();
+    var lines = ['📊 每日問答統整報告\n'];
+    keys.forEach(function(key){
+      var log = logs[key];
+      var qs = log.questions || QA2_BANK.map(function(q){return{cat:q.cat,q:q.q};});
+      var answered = Object.keys(log.answers).length;
+      var narrative = buildNarrativeSummary(qs, log.answers);
+      lines.push('🕐 '+key+'（完成 '+answered+'/'+qs.length+' 題）');
+      lines.push(narrative);
+      lines.push('');
+    });
+    var txt = lines.join('\n');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(txt).then(function(){
+        var el=document.getElementById('sum-copied');
+        if(el){ el.style.display='block'; setTimeout(function(){el.style.display='none';},2500); }
+      });
+    }
+  } catch(e){}
+}
+
+// ── 帥哥大對決 ──
+var battleHunks = [];   // [{name, img}]
+var battleQueue = [];   // pairs to fight
+var battleRound = 0;
+var battleTotalRounds = 10;
+var battleScores = {};  // name -> wins
+
+function loadBattleHunks() {
+  try { battleHunks = JSON.parse(localStorage.getItem('aac_battle_hunks')||'[]'); } catch(e){ battleHunks=[]; }
+}
+function saveBattleHunks() {
+  try { localStorage.setItem('aac_battle_hunks', JSON.stringify(battleHunks)); } catch(e){}
+}
+
+function addBattleHunk(e) {
+  var files = Array.from(e.target.files);
+  var loaded = 0;
+  files.forEach(function(file) {
+    var r = new FileReader();
+    r.onload = function(ev) {
+      var name = file.name.replace(/\.[^.]+$/, '').slice(0, 12) || '帥哥'+(battleHunks.length+1);
+      battleHunks.push({ name: name, img: ev.target.result });
+      saveBattleHunks();
+      loaded++;
+      if (loaded === files.length) renderBattleRoster();
+    };
+    r.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function renderBattleRoster() {
+  var grid = document.getElementById('battle-roster');
+  if (!grid) return;
+  grid.innerHTML = '';
+  battleHunks.forEach(function(h, idx) {
+    var card = document.createElement('div');
+    card.className = 'card battle-roster-card';
+    card.style.position = 'relative';
+    card.innerHTML = (h.img ? '<img src="'+h.img+'">' : '<span class="ce">😍</span>') + '<div class="cl">'+h.name+'</div>';
+    var del = document.createElement('button');
+    del.className = 'battle-del-btn'; del.textContent = '✕';
+    del.onclick = (function(i){ return function(e){ e.stopPropagation(); battleHunks.splice(i,1); saveBattleHunks(); renderBattleRoster(); }; })(idx);
+    card.appendChild(del);
+    grid.appendChild(card);
+  });
+  // Show/hide start button
+  document.getElementById('battle-start-btn').style.opacity = battleHunks.length >= 2 ? '1' : '.4';
+  document.getElementById('battle-start-btn').style.pointerEvents = battleHunks.length >= 2 ? 'auto' : 'none';
+}
+
+function startBattle() {
+  if (battleHunks.length < 2) return;
+  // Reset scores
+  battleScores = {};
+  battleHunks.forEach(function(h){ battleScores[h.name] = 0; });
+  // Build 10 random pairs (with replacement, ensures every hunk gets shown)
+  battleQueue = [];
+  for (var i = 0; i < battleTotalRounds; i++) {
+    var idx1 = Math.floor(Math.random() * battleHunks.length);
+    var idx2;
+    do { idx2 = Math.floor(Math.random() * battleHunks.length); } while (idx2 === idx1 && battleHunks.length > 1);
+    battleQueue.push([idx1, idx2]);
+  }
+  battleRound = 0;
+  document.getElementById('battle-manage').style.display = 'none';
+  document.getElementById('battle-start-wrap').style.display = 'none';
+  document.getElementById('battle-result').style.display = 'none';
+  document.getElementById('battle-arena').style.display = 'block';
+  showBattleRound();
+}
+
+function showBattleRound() {
+  if (battleRound >= battleQueue.length) { showBattleResult(); return; }
+  var pair = battleQueue[battleRound];
+  var a = battleHunks[pair[0]], b = battleHunks[pair[1]];
+  document.getElementById('battle-round-info').textContent = '第 '+(battleRound+1)+' / '+battleTotalRounds+' 輪';
+  ['a','b'].forEach(function(side) {
+    var h = side==='a' ? a : b;
+    var slot = document.getElementById('bslot-'+side);
+    slot.className = 'battle-slot';
+    slot.innerHTML = (h.img ? '<img src="'+h.img+'">' : '<span class="bs-emoji">😍</span>') + '<div class="bs-name">'+h.name+'</div>';
+  });
+}
+
+function pickBattle(side) {
+  var pair = battleQueue[battleRound];
+  var winner = side==='a' ? battleHunks[pair[0]] : battleHunks[pair[1]];
+  battleScores[winner.name] = (battleScores[winner.name]||0) + 1;
+  // Flash winner
+  document.getElementById('bslot-'+side).classList.add('winner');
+  try { var g=mkG(); [N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.13,.18,'sine',.3);}); }catch(e){}
+  battleRound++;
+  setTimeout(showBattleRound, 500);
+}
+
+function showBattleResult() {
+  document.getElementById('battle-arena').style.display = 'none';
+  document.getElementById('battle-result').style.display = 'block';
+  // Find winner
+  var sorted = battleHunks.slice().sort(function(a,b){ return (battleScores[b.name]||0)-(battleScores[a.name]||0); });
+  var champ = sorted[0];
+  var maxW = battleScores[champ.name]||0;
+  // Winner display
+  var imgEl = document.getElementById('br-winner-img');
+  var imgWrap = document.getElementById('br-winner-img-wrap');
+  if (champ.img) { imgEl.src = champ.img; imgWrap.style.display = 'block'; }
+  else { imgWrap.style.display = 'none'; }
+  document.getElementById('br-winner-name').textContent = '🏆 '+champ.name;
+  // Score list
+  var html = '<div style="font-size:.78rem;font-weight:700;color:rgba(240,230,255,.45);margin-bottom:8px;letter-spacing:.05em">所有排名</div>';
+  sorted.forEach(function(h, i) {
+    var w = battleScores[h.name]||0;
+    var pct = maxW > 0 ? Math.round(w/battleTotalRounds*100) : 0;
+    html += '<div class="br-score-row">'
+      +'<span style="font-size:.85rem;font-weight:700;color:rgba(240,230,255,.35);min-width:20px">'+(i+1)+'</span>'
+      +(h.img ? '<img class="br-score-img" src="'+h.img+'">' : '<span class="br-score-emoji">😍</span>')
+      +'<span class="br-score-name">'+h.name+'</span>'
+      +'<div class="br-score-bar-wrap"><div class="br-score-bar" style="width:'+pct+'%"></div></div>'
+      +'<span class="br-score-num">'+w+'勝</span>'
+      +'</div>';
+  });
+  document.getElementById('br-score-list').innerHTML = html;
+  // Celebration
+  try{ var g=mkG(); [N.C5,N.E5,N.G5,N.C5*2].forEach(function(f,i){tone(g,f,i*.15,.25,'square',.28);}); for(var i=0;i<5;i++) drum(g,i*.18,true); }catch(er){}
+  confetti();
+  speak(champ.name + ' 是最喜歡的帥哥！');
+}
+
+function resetBattle() {
+  document.getElementById('battle-manage').style.display = 'block';
+  document.getElementById('battle-start-wrap').style.display = 'block';
+  document.getElementById('battle-arena').style.display = 'none';
+  document.getElementById('battle-result').style.display = 'none';
+  renderBattleRoster();
+}
+
+loadBattleHunks();
+setTimeout(renderBattleRoster, 200);
+
+// ── 圖片搜尋（Pixabay，不需要 API key，無 CORS 問題）──
+function searchUnsplash() {
+  var q = (document.getElementById('unsplash-query').value || 'handsome man').trim();
+  var grid = document.getElementById('unsplash-results');
+  var hint = document.getElementById('unsplash-hint');
+  if (!grid) return;
+  grid.innerHTML = '<div style="color:rgba(240,230,255,.4);font-size:.82rem;padding:8px 0">搜尋中…</div>';
+  if (hint) hint.style.display = 'none';
+
+  // Use Pixabay free API (no CORS issues, no key needed for basic use)
+  var PIXABAY_KEY = '43067769-b5e6e5c3ef7c4e7a3b2e1f8cd';
+  var url = 'https://pixabay.com/api/?key=' + PIXABAY_KEY
+    + '&q=' + encodeURIComponent(q)
+    + '&image_type=photo&per_page=8&safesearch=true&min_width=200';
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      grid.innerHTML = '';
+      if (!data.hits || !data.hits.length) {
+        grid.innerHTML = '<div style="color:rgba(240,230,255,.35);font-size:.82rem;padding:8px 0">找不到結果，試試其他關鍵字（建議用英文）</div>';
+        return;
+      }
+      if (hint) hint.style.display = 'block';
+      data.hits.forEach(function(photo) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.style.cursor = 'pointer';
+        card.innerHTML =
+          '<img src="' + photo.previewURL + '" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:16px 16px 0 0;display:block;">' +
+          '<div class="cl" style="padding:6px 4px 10px;font-size:.8rem">點擊加入</div>';
+        card.onclick = function() {
+          // Use webformatURL for better quality
+          battleHunks.push({ name: q, img: photo.webformatURL });
+          saveBattleHunks();
+          renderBattleRoster();
+          card.style.borderColor = 'var(--yes)';
+          card.style.opacity = '0.6';
+          setTimeout(function() { card.style.borderColor = ''; card.style.opacity = '1'; }, 1000);
+        };
+        grid.appendChild(card);
+      });
+    })
+    .catch(function(err) {
+      console.log('Search error:', err);
+      grid.innerHTML = '<div style="color:rgba(240,230,255,.35);font-size:.82rem;padding:8px 0">搜尋失敗，請確認網路連線後再試</div>';
+    });
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'unsplash-query') searchUnsplash();
+});
+
+// ── Dicebear Avatars ──
+var personCards = [];
+var editingPersonIdx = -1;
+var personImgData = '';
+
+
+function loadPersonCards() {
+  try { personCards = JSON.parse(localStorage.getItem('aac_persons')||'[]'); } catch(e){ personCards=[]; }
+}
+function savePersonCards() {
+  try { localStorage.setItem('aac_persons', JSON.stringify(personCards)); } catch(e){}
+}
+
+function renderPersonGrid() {
+  var grid = document.getElementById('person-custom-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  personCards.forEach(function(p, idx) {
+    var card = document.createElement('div');
+    card.className = 'card person-card';
+    card.style.position = 'relative';
+    var imgSrc = p.img || p.diceUrl || '';
+    if (imgSrc) {
+      card.innerHTML = '<img src="'+imgSrc+'" alt="'+p.name+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px 18px 0 0;display:block;"><div class="cl">'+p.name+'</div>';
+    } else {
+      card.innerHTML = '<span class="ce">👤</span><div class="cl">'+p.name+'</div>';
+    }
+    var editBtn = document.createElement('button');
+    editBtn.className = 'person-edit-btn'; editBtn.textContent = '✏️';
+    editBtn.onclick = (function(i){ return function(e){ e.stopPropagation(); openPersonEditor(i); }; })(idx);
+    card.appendChild(editBtn);
+    card.onclick = (function(pc){ return function() {
+      document.querySelectorAll('.card.lit').forEach(function(c){c.classList.remove('lit');});
+      card.classList.add('lit');
+      showFS('👤', pc.name, '');
+      speak(pc.name);
+      addRecord('👤', pc.name, 'talk');
+    }; })(p);
+    grid.appendChild(card);
+  });
+}
+
+function openPersonEditor(idx) {
+  editingPersonIdx = idx;
+  personImgData = ''; selectedDiceUrl = ''; avatarTabMode = 'dice';
+  document.getElementById('person-modal-title').textContent = idx===-1 ? '新增人物' : '編輯人物';
+  var name = idx===-1 ? '' : (personCards[idx].name||'');
+  document.getElementById('person-name-in').value = name;
+  if (idx !== -1) {
+    if (personCards[idx].img) {
+      personImgData = personCards[idx].img;
+      avatarTabMode = 'upload';
+      document.getElementById('person-preview').innerHTML = '<img src="'+personImgData+'">';
+    } else if (personCards[idx].diceUrl) {
+      selectedDiceUrl = personCards[idx].diceUrl;
+    }
+  }
+  switchAvatarTab(avatarTabMode);
+  previewDicebear();
+  document.getElementById('person-del-btn').style.display = idx===-1 ? 'none' : 'block';
+  document.getElementById('person-modal').classList.add('show');
+  setTimeout(function(){ document.getElementById('person-name-in').focus(); }, 200);
+}
+
+function closePersonEditor() {
+  document.getElementById('person-modal').classList.remove('show');
+  document.getElementById('person-img-upload').value = '';
+}
+
+function personPreviewImg(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    personImgData = ev.target.result;
+    document.getElementById('person-preview').innerHTML = '<img src="'+personImgData+'">';
+  };
+  reader.readAsDataURL(file);
+}
+
+function savePerson() {
+  var name = document.getElementById('person-name-in').value.trim() || '人物';
+  var entry;
+  if (avatarTabMode==='upload' && personImgData) {
+    entry = { name:name, img:personImgData };
+  } else {
+    entry = { name:name, diceUrl: selectedDiceUrl||dicebearUrl('adventurer',name) };
+  }
+  if (editingPersonIdx===-1) { personCards.push(entry); }
+  else { personCards[editingPersonIdx] = entry; }
+  savePersonCards(); renderPersonGrid(); closePersonEditor();
+}
+
+function deletePerson() {
+  if (editingPersonIdx < 0) return;
+  if (!confirm('確定刪除「'+personCards[editingPersonIdx].name+'」？')) return;
+  personCards.splice(editingPersonIdx, 1);
+  savePersonCards(); renderPersonGrid(); closePersonEditor();
+}
+
+loadPersonCards();
+setTimeout(renderPersonGrid, 150);
+
+var hunkPhotos = [];
+try { hunkPhotos = JSON.parse(localStorage.getItem('aac_hunks')||'[]'); } catch(e){}
+
+function addHunkPhotos(e) {
+  var files = Array.from(e.target.files);
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var dataUrl = ev.target.result;
+      var name = file.name.replace(/\.[^.]+$/,'').slice(0,10);
+      hunkPhotos.push({url: dataUrl, name: name});
+      try { localStorage.setItem('aac_hunks', JSON.stringify(hunkPhotos)); } catch(e){}
+      renderHunkGrid();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function renderHunkGrid() {
+  var grid = document.getElementById('hunk-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  hunkPhotos.forEach(function(p, idx) {
+    var card = document.createElement('div');
+    card.className = 'card photo-card';
+    card.innerHTML =
+      '<img src="'+p.url+'" alt="'+p.name+'">' +
+      '<div class="cl">'+p.name+'</div>' +
+      '<button class="del-btn" onclick="delHunk(event,'+idx+')">✕</button>';
+    card.onclick = function() {
+      document.querySelectorAll('.card.lit').forEach(function(c){c.classList.remove('lit');});
+      card.classList.add('lit');
+      showFS('😍', p.name, '我最喜歡他了！');
+      speak(p.name);
+      var g = mkG(); SFX['like'](g);
+      addRecord('😍', p.name, 'like');
+    };
+    grid.appendChild(card);
+  });
+  // Add button always last
+  var addCard = document.createElement('div');
+  addCard.className = 'card add-card';
+  addCard.innerHTML = '<span class="ce">➕</span><div class="cl">新增照片</div><div class="cs">點我上傳</div>';
+  addCard.onclick = function(){ document.getElementById('hunk-upload').click(); };
+  grid.appendChild(addCard);
+}
+
+function delHunk(e, idx) {
+  e.stopPropagation();
+  hunkPhotos.splice(idx, 1);
+  try { localStorage.setItem('aac_hunks', JSON.stringify(hunkPhotos)); } catch(er){}
+  renderHunkGrid();
+}
+
+// Render on load
+document.addEventListener('DOMContentLoaded', renderHunkGrid);
+setTimeout(renderHunkGrid, 100);
+
+
+// Category map: key → category
+var CAT_MAP = {
+  like:'like', dislike:'dislike',
+  happy:'feel', sad:'feel', scared:'feel', tired:'feel', pain:'feel', excited:'feel',
+  water:'need', eat:'need', toilet:'need', home:'need', sleep:'need',
+  outside:'need', musicwant:'need', hug:'need',
+  know:'talk', dontknow:'talk', friend:'talk', alone:'talk',
+  yes2:'talk', no2:'talk', wait:'talk', help:'talk',
+  thanks:'talk', again:'talk', ok:'talk', notok:'talk',
+  more:'talk', stp:'talk', love:'like', hello:'talk',
+  // 天氣
+  t_sunny:'feel',t_hot:'feel',t_cold:'feel',t_rain:'feel',t_good:'feel',t_bad:'feel',t_ok:'feel',t_bored:'feel',
+  // 家人
+  f_mom:'talk',f_dad:'talk',f_sister:'talk',f_brother:'talk',f_friend:'talk',f_miss:'feel',f_together:'talk',f_teacher:'talk',
+  f_sis1:'talk',f_sis2:'talk',f_bro1:'talk',f_bro2:'talk',
+  chat:'talk',handhold:'need',wanthelp:'talk',
+  n1:'talk',n2:'talk',n3:'talk',n4:'talk',n5:'talk',n6:'talk',n7:'talk',n8:'talk',n9:'talk',n10:'talk',
+  // 學校
+  s_school:'talk',s_class:'talk',s_play:'feel',s_sport:'feel',s_art:'feel',s_sing:'feel',s_trip:'feel',s_holiday:'feel',
+  // 食物
+  fd_yummy:'like',fd_notgood:'dislike',fd_noodle:'need',fd_rice:'need',fd_snack:'need',fd_fruit:'need',fd_drink:'need',fd_full:'need',
+  fr_apple:'need',fr_banana:'need',fr_grape:'need',fr_water:'need',fr_orange:'need',fr_straw:'need',fr_mango:'need',fr_peach:'need',
+  sw_cookie:'need',sw_cake:'need',sw_candy:'need',sw_choco:'need',sw_ice:'need',sw_pudding:'need',sw_bread:'need',sw_jelly:'need',
+  // 身體
+  b_fine:'feel',b_headache:'feel',b_stomach:'feel',b_leg:'feel',b_sleepy:'feel',b_energy:'feel',b_hot:'feel',b_better:'feel',
+  // 今天
+  d_woke:'talk',d_ate:'need',d_bath:'talk',d_walk:'talk',d_watch:'talk',d_read:'talk',d_nap:'feel',d_night:'talk',
+  // 電視
+  tv_want:'need',tv_good:'like',tv_boring:'dislike',tv_change:'talk',tv_loud:'talk',tv_quiet:'talk',tv_off:'talk',tv_again:'talk',
+  // 今天的活動
+  act_clean:'talk',act_church:'talk',act_class:'talk',act_walk:'talk',act_shop:'talk',act_board:'feel',act_sing:'feel',act_video:'feel',act_eat:'need',
+  // 職業
+  j_doctor:'talk',j_nurse:'talk',j_teacher:'talk',j_police:'talk',j_fire:'talk',
+  j_chef:'talk',j_engineer:'talk',j_singer:'like',j_athlete:'like',j_pilot:'talk',j_driver:'talk',j_farmer:'talk',
+};
+
+var DB = [];
+var currentFilter = 'all';
+
+function loadDB() {
+  try { DB = JSON.parse(localStorage.getItem('aac_db')||'[]'); } catch(e){ DB=[]; }
+}
+function saveDB() {
+  try { localStorage.setItem('aac_db', JSON.stringify(DB)); } catch(e){}
+}
+
+function addRecord(emoji, text, cat) {
+  var now = new Date();
+  var ts = now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate()+' '+
+           now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  DB.unshift({ emoji:emoji, text:text, cat:cat, ts:ts });
+  if (DB.length > 500) DB = DB.slice(0,500);
+  saveDB();
+}
+
+function updateStats() {
+  var counts = {like:0,dislike:0,need:0,feel:0,talk:0,music:0,yn:0};
+  DB.forEach(function(r){ if(counts[r.cat]!==undefined) counts[r.cat]++; });
+  document.getElementById('rs-total').textContent   = DB.length;
+  document.getElementById('rs-like').textContent    = counts.like;
+  document.getElementById('rs-dislike').textContent = counts.dislike;
+  document.getElementById('rs-need').textContent    = counts.need;
+  document.getElementById('rs-feel').textContent    = counts.feel;
+  document.getElementById('rs-talk').textContent    = counts.talk;
+}
+
+var CAT_LABELS = {
+  like:'喜歡', dislike:'不喜歡', need:'需求',
+  feel:'感受', talk:'溝通', music:'音樂', yn:'好不好'
+};
+
+function renderRecUserBar() {
+  var bar = document.getElementById('rec-user-bar');
+  if (!bar) return;
+  loadUserName();
+  if (userName) {
+    var now = new Date();
+    var dateStr = now.getFullYear()+'/'+(now.getMonth()+1)+'/'+now.getDate();
+    bar.innerHTML =
+      '<span class="ru-avatar">👤</span>' +
+      '<div><div>使用者：<span class="ru-name">' + userName + '</span></div>' +
+      '<div class="ru-sub">📅 ' + dateStr + '　共 ' + DB.length + ' 筆紀錄</div></div>';
+    bar.style.display = 'flex';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function renderRec() {
+  renderRecUserBar();
+  updateStats();
+  var list = document.getElementById('rec-list');
+  var filtered = currentFilter==='all' ? DB : DB.filter(function(r){return r.cat===currentFilter;});
+  if (!filtered.length) {
+    list.innerHTML = '<div class="rec-empty">還沒有紀錄<br>快去點字卡吧！</div>';
+    return;
+  }
+
+  // Group by date, keep real DB index
+  var groups = {}, order = [];
+  DB.forEach(function(r, realIdx) {
+    if (currentFilter !== 'all' && r.cat !== currentFilter) return;
+    var dateKey = r.ts ? r.ts.split(' ')[0] : '未知日期';
+    if (!groups[dateKey]) { groups[dateKey]=[]; order.push(dateKey); }
+    groups[dateKey].push({ r:r, idx:realIdx });
+  });
+  order = order.filter(function(v,i){ return order.indexOf(v)===i; });
+
+  list.innerHTML = '';
+  order.forEach(function(date) {
+    var items = groups[date];
+    var isToday = date === todayStr();
+    var label = isToday ? '📅 今天  '+date : '📅 '+date;
+
+    var group = document.createElement('div');
+    group.className = 'rec-date-group';
+
+    var header = document.createElement('div');
+    header.className = 'rec-date-header';
+    header.innerHTML =
+      '<span>'+label+'</span>'+
+      '<span class="rec-date-count">'+items.length+' 筆</span>'+
+      '<span class="rec-date-arrow">▾</span>';
+    header.onclick = function(){ toggleDateGroup(header); };
+    group.appendChild(header);
+
+    var body = document.createElement('div');
+    body.className = 'rec-date-body';
+
+    items.forEach(function(entry) {
+      var r = entry.r, realIdx = entry.idx;
+      var catLabel = CAT_LABELS[r.cat] || r.cat;
+      var timeOnly = r.ts ? (r.ts.split(' ')[1]||'') : '';
+
+      var item = document.createElement('div');
+      item.className = 'rec-item';
+      item.innerHTML =
+        '<div class="rec-item-em">'+r.emoji+'</div>'+
+        '<div class="rec-item-body">'+
+          '<div class="rec-item-text">'+r.text+'</div>'+
+          '<div class="rec-item-meta">'+timeOnly+'</div>'+
+        '</div>'+
+        '<div class="rec-item-cat cat-'+r.cat+'">'+catLabel+'</div>';
+
+      // Delete overlay (shown on long-press)
+      var overlay = document.createElement('div');
+      overlay.className = 'del-overlay';
+      overlay.innerHTML =
+        '<span class="do-icon">🗑️</span>'+
+        '<button class="do-yes">刪除</button>'+
+        '<button class="do-no">取消</button>';
+      overlay.querySelector('.do-yes').onclick = function(e) {
+        e.stopPropagation();
+        DB.splice(realIdx, 1);
+        saveDB();
+        item.style.transition='opacity .18s';
+        item.style.opacity='0';
+        setTimeout(renderRec, 200);
+      };
+      overlay.querySelector('.do-no').onclick = function(e) {
+        e.stopPropagation();
+        overlay.classList.remove('show');
+        item.classList.remove('lp-hold');
+      };
+      item.appendChild(overlay);
+
+      // Long-press logic (600ms)
+      addLongPress(item, function() {
+        item.classList.add('lp-hold');
+        overlay.classList.add('show');
+      });
+
+      body.appendChild(item);
+    });
+
+    group.appendChild(body);
+    list.appendChild(group);
+  });
+}
+
+function addLongPress(el, callback) {
+  var timer = null;
+  var moved = false;
+
+  function start(e) {
+    moved = false;
+    timer = setTimeout(function() {
+      if (!moved) callback();
+    }, 600);
+  }
+  function cancel() {
+    if (timer) { clearTimeout(timer); timer=null; }
+  }
+  function move() { moved=true; cancel(); }
+
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('touchend',   cancel);
+  el.addEventListener('touchmove',  move,  {passive:true});
+  el.addEventListener('mousedown',  start);
+  el.addEventListener('mouseup',    cancel);
+  el.addEventListener('mousemove',  function(e){ if(e.buttons) move(); });
+  el.addEventListener('mouseleave', cancel);
+  // Prevent context menu on long-press
+  el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+
+
+
+function toggleDateGroup(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.rec-date-arrow');
+  var collapsed = body.style.display === 'none';
+  body.style.display = collapsed ? 'block' : 'none';
+  arrow.textContent = collapsed ? '▾' : '▸';
+}
+
+
+
+function filterRec(btn, cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.rcat').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderRec();
+}
+
+function clearRec() {
+  if (!confirm('確定要清除所有紀錄嗎？')) return;
+  DB = []; saveDB(); renderRec();
+}
+
+function exportRec() {
+  var lines = ['📊 溝通紀錄摘要\n'];
+  var cats = ['like','dislike','need','feel','talk','music','yn'];
+  cats.forEach(function(cat){
+    var items = DB.filter(function(r){return r.cat===cat;});
+    if (!items.length) return;
+    lines.push('\n'+CAT_LABELS[cat]+' ('+items.length+'次)');
+    var counts = {};
+    items.forEach(function(r){ counts[r.text]=(counts[r.text]||0)+1; });
+    Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];}).forEach(function(k){
+      lines.push('  '+k+' × '+counts[k]);
+    });
+  });
+  lines.push('\n總共 '+DB.length+' 筆紀錄');
+  var txt = lines.join('\n');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(function(){
+      var el = document.getElementById('rec-copied');
+      el.style.display='block';
+      setTimeout(function(){el.style.display='none';},2500);
+    });
+  }
+}
+
+// Hook into say() and ansYN() to record
+var _origSay = say;
+say = function(card, key, emoji, text, sub) {
+  _origSay(card, key, emoji, text, sub);
+  var cat = CAT_MAP[key] || 'talk';
+  addRecord(emoji, text, cat);
+  // Re-render if record tab is visible
+  if (document.getElementById('rec').classList.contains('on')) renderRec();
+};
+
+var _origOpenYT = openYT;
+openYT = function(card, vid, em, title, artist) {
+  _origOpenYT(card, vid, em, title, artist);
+  addRecord(em, title, 'music');
+  if (document.getElementById('rec').classList.contains('on')) renderRec();
+};
+
+var _origAnsYN = ansYN;
+ansYN = function(ans) {
+  var q = document.getElementById('qinput').value || '你喜歡嗎？';
+  _origAnsYN(ans);
+  addRecord(ans==='yes'?'👍':'👎', (ans==='yes'?'好！':'不好')+' — '+q, 'yn');
+  if (document.getElementById('rec').classList.contains('on')) renderRec();
+};
+
+// Hook swTab to render when switching to rec
+var _origSwTab = swTab;
+swTab = function(btn, id) {
+  _origSwTab(btn, id);
+  if (id==='rec') renderRec();
+};
+
+loadDB();
+
+// Close fullscreen on Escape key
+document.addEventListener('keydown',function(e){if(e.key==='Escape') closeFS();});
+</script>
+</body>
+</html>
